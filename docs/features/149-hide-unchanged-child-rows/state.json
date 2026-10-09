@@ -1,10 +1,10 @@
 {
   "type": "feature",
   "slug": "149-hide-unchanged-child-rows",
-  "stage": "architect",
+  "stage": "quality-engineer",
   "status": "running",
   "gates": {
-    "spec": "pending",
+    "spec": "approved",
     "arch": "n/a",
     "uat": "n/a"
   },
@@ -57,6 +57,13 @@
       "raised_at": "2026-10-09",
       "resolved": true,
       "answer": "Keep showing the mixed-children warning even when every child is unchanged; only the heading, table and count note are omitted, and the warning renders on its own."
+    },
+    {
+      "q": "Should unchanged child rows also be hidden for no-op parents shown because a separate child changed (the spec names update and replace only)?",
+      "assumed": "Yes: filter every parent action except create and delete; no-op parents render a Change column with possible unchanged rows, and create/delete tables contain none.",
+      "raised_by": "architect",
+      "raised_at": "2026-10-09"
     }
-  ]
+  ],
+  "arch_contested": false
 }
