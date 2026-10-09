@@ -15,13 +15,15 @@ Generate one golden markdown file per fixture used by TC-30 to TC-39 (option on)
 per existing non-parent-child snapshot fixture, from the unmodified production code. Commit
 the golden files in a commit that touches no production code. Developer role.
 **Acceptance Criteria:**
-- [ ] `git diff main -- src/Oocx.TfPlan2Md` is empty at the time the baselines are generated
+- [x] `git diff main -- src/Oocx.TfPlan2Md` is empty at the time the baselines are generated
       (verifies the "pre-change build" premise in the test plan)
-- [ ] One golden file exists for every fixture in TC-30 to TC-39 and TC-61, rendered with
+- [x] One golden file exists for every fixture in TC-30 to TC-39 and TC-61, rendered with
       `--show-unchanged-values`
-- [ ] Golden files for every existing non-parent-child fixture exist for TC-64
-- [ ] Generating the baselines twice produces byte-identical files
-- [ ] Commit contains only golden files and fixtures (no `src/` production changes)
+- [x] Golden files for every existing non-parent-child fixture exist for TC-64
+      (the committed default-mode files under `TestData/Snapshots/` at the pre-feature commit are
+      the baselines; Task 18 verifies they stay byte-identical)
+- [x] Generating the baselines twice produces byte-identical files
+- [x] Commit contains only golden files and fixtures (no `src/` production changes)
 **Dependencies:** None
 
 ### Task 2: Add child-noun and hidden-count fields to the model and provider registrations
