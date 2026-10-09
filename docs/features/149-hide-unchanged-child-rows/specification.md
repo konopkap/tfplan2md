@@ -51,7 +51,10 @@ Source request: GitHub issue #679.
   with `--show-unchanged-values`.
 - When every child of a table is unchanged and `--show-unchanged-values` is not set, the
   whole child-table section is omitted: no heading, no table and no note. In particular, no
-  hidden-count note is shown for it.
+  hidden-count note is shown for it. The one exception is the warning for a parent whose
+  children are managed both inline and as separate resources: it is a configuration
+  warning, not a change, so it is still shown, on its own, without the heading, table or
+  note.
 - The behaviour applies to the parent actions that render a Change column (update and
   replace). Create and delete child tables are unaffected, because they contain no
   unchanged rows.
@@ -122,6 +125,14 @@ A route table whose tags change but whose routes do not renders its attribute ta
 nothing else: there is no `#### Routes` heading, no table and no hidden-count note. With
 `--show-unchanged-values`, the full table of ⏺️ rows is rendered as today.
 
+If that route table has routes managed both inline and as separate `azurerm_route`
+resources, the mixed-children warning is still rendered, without the heading, table or
+note:
+
+```markdown
+⚠️ **Warning:** This resource has children managed both inline and as separate resources. This configuration will cause conflicts.
+```
+
 ### Errors
 
 No new error conditions. Plans without parent-child resources produce identical output.
@@ -146,13 +157,15 @@ No new error conditions. Plans without parent-child resources produce identical 
 - [ ] No hidden-count note is shown when no child row was hidden.
 - [ ] No hidden-count note is shown with `--show-unchanged-values`.
 - [ ] Without `--show-unchanged-values`, when every child is unchanged, the whole child-table
-      section is omitted: no heading, no table and no hidden-count note.
+      section is omitted: no heading, no table and no hidden-count note, except for the
+      mixed-children warning where one applies.
 - [ ] With `--show-unchanged-values`, when every child is unchanged, the full table of ⏺️
       rows is rendered.
 - [ ] Create and delete parents render their child tables exactly as before.
 - [ ] The parent summary line's child counts are unchanged.
-- [ ] The mixed inline-and-separate warning is still shown whenever the child section is
-      rendered.
+- [ ] The mixed inline-and-separate warning is shown whenever it is shown today, including
+      when every child is unchanged; in that case it renders on its own, without the child
+      heading, table or hidden-count note.
 - [ ] The NSG documentation in `docs/features.md` no longer says that unchanged security
       rules are always shown.
 - [ ] Code analysis findings for a merged child are still shown in the parent section when
@@ -176,10 +189,9 @@ The Maintainer answered the questions raised with the first draft of this specif
    documentation is updated to match.
 4. Firewall rule collection, build definition and variable group tables are out of scope.
 5. On a parent replace, unchanged children are hidden too, as attribute tables do.
+6. The mixed inline-and-separate warning is still shown when every child is unchanged. Only
+   the heading, table and hidden-count note are omitted; the warning renders on its own.
 
 ## Open Questions and Assumptions
 
-1. A parent with children managed both inline and as separate resources shows a warning
-   inside its child section. When every child is unchanged, the section is omitted. Should
-   the warning still be shown? Assumed: no, it is omitted with the section, following
-   decision 1 literally; `--show-unchanged-values` shows it as today.
+None open.

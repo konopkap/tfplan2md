@@ -54,7 +54,9 @@
       "q": "When every child is unchanged the child section is omitted; should the mixed inline-and-separate warning inside that section still be shown?",
       "assumed": "No, it is omitted with the section (decision 1 taken literally); --show-unchanged-values shows it as today.",
       "raised_by": "architect",
-      "raised_at": "2026-10-09"
+      "raised_at": "2026-10-09",
+      "resolved": true,
+      "answer": "Keep showing the mixed-children warning even when every child is unchanged; only the heading, table and count note are omitted, and the warning renders on its own."
     }
   ]
 }
