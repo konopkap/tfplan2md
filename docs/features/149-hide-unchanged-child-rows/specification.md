@@ -42,10 +42,16 @@ Source request: GitHub issue #679.
   exactly as today, in the same order relative to each other.
 - With `--show-unchanged-values`: child tables are rendered exactly as today, including
   unchanged rows.
+- When at least one row was hidden and at least one row remains, a one-line italic note
+  directly below the table states how many unchanged children were hidden, for example
+  `_8 unchanged routes hidden._`. The note names the children with the same child label
+  the table already uses (its heading, for example "routes", "subnets", "security rules",
+  "members"), and uses the singular form for exactly one hidden child
+  (`_1 unchanged route hidden._`). The note is not shown when no row was hidden, and never
+  with `--show-unchanged-values`.
 - When every child of a table is unchanged and `--show-unchanged-values` is not set, the
-  table is not rendered. The child section heading (for example `#### Routes`) remains,
-  followed by a one-line italic note stating that the children did not change, in the
-  style of the existing `_No attribute changes._` note.
+  whole child-table section is omitted: no heading, no table and no note. In particular, no
+  hidden-count note is shown for it.
 - The behaviour applies to the parent actions that render a Change column (update and
   replace). Create and delete child tables are unaffected, because they contain no
   unchanged rows.
@@ -59,18 +65,13 @@ Source request: GitHub issue #679.
 - Changing the parent resource's summary line. Its child counts (for example
   `➕ 1 routes | 🔄 1 routes | ❌ 1 routes`) already count only changed children and stay
   as they are.
-- A note stating how many unchanged children were hidden (issue #679, proposal 4). Attribute
-  tables hide unchanged rows without a count, and this feature follows them. See Open
-  Questions.
+- Adding a hidden-count note to attribute tables. The count note applies to child tables
+  only.
 - Changing how a child's change indicator is determined, how children are matched between
   before and after, or which columns a child table has.
 - Provider-specific semantic tables that are not part of parent-child resource grouping,
   such as the firewall network and application rule collection templates and the Azure
   DevOps build definition and variable group tables. They keep showing unchanged rows.
-  See Open Questions.
-- The warning shown when a parent has children managed both inline and as separate
-  resources. It is a configuration warning, not a change, and is shown whenever it is shown
-  today, including when every child row is hidden.
 - Static code analysis findings mapped to a child. Findings shown in the parent section for
   a merged child remain shown even when that child's row is hidden.
 - Adding a new command-line option. The existing `--show-unchanged-values` controls this
@@ -92,9 +93,14 @@ unchanged:
 | ➕ | `🆔 to-firewall` | `🌐 0.0.0.0/0` | `VirtualAppliance` | `🌐 10.200.1.10` | `azurerm_route.separate_route1` |
 | 🔄 | `🆔 to-hub` | ... | ... | ... | `azurerm_route.separate_route2` |
 | ❌ | `🆔 old-route` | `🌐 172.16.0.0/12` | `None` | - | `azurerm_route.separate_route3` |
+
+_1 unchanged route hidden._
 ```
 
-The ⏺️ row for `unchanged-route` that appears today is omitted.
+The ⏺️ row for `unchanged-route` that appears today is omitted, and the note below the
+table says so. With 8 unchanged routes the note reads `_8 unchanged routes hidden._`. The
+exact wording is a design detail; the contract is one italic line giving the number of
+hidden children, named with the table's child label and correct singular or plural.
 
 ### With `--show-unchanged-values`
 
@@ -108,20 +114,12 @@ The same table additionally contains:
 | ⏺️ | `🆔 unchanged-route` | `🌐 192.168.0.0/16` | `VnetLocal` | - | `azurerm_route.separate_route4` |
 ```
 
-This is the output tfplan2md produces today.
+and no hidden-count note is shown. This is the output tfplan2md produces today.
 
 ### Every child unchanged
 
-A route table whose tags change but whose routes do not:
-
-```markdown
-#### Routes
-
-_No route changes._
-```
-
-The exact wording of the note is a design detail; the contract is that the heading remains,
-no table is rendered, and one italic line states that the children did not change. With
+A route table whose tags change but whose routes do not renders its attribute table and
+nothing else: there is no `#### Routes` heading, no table and no hidden-count note. With
 `--show-unchanged-values`, the full table of ⏺️ rows is rendered as today.
 
 ### Errors
@@ -140,13 +138,23 @@ No new error conditions. Plans without parent-child resources produce identical 
 - [ ] The filtering applies to every parent-child pattern listed in `docs/features.md`, not
       only `azurerm_route_table`; at least one non-route pattern is covered by a test.
 - [ ] The relative order of the remaining rows is unchanged by the filtering.
-- [ ] Without `--show-unchanged-values`, when every child is unchanged, no child table is
-      rendered; the child section heading is followed by a one-line italic note.
+- [ ] Without `--show-unchanged-values`, when some rows are hidden and some remain, one
+      italic line below the table states the number of hidden children, named with the
+      table's child label.
+- [ ] The hidden-count note uses the singular form for exactly one hidden child and the
+      plural form otherwise, for every child table type.
+- [ ] No hidden-count note is shown when no child row was hidden.
+- [ ] No hidden-count note is shown with `--show-unchanged-values`.
+- [ ] Without `--show-unchanged-values`, when every child is unchanged, the whole child-table
+      section is omitted: no heading, no table and no hidden-count note.
 - [ ] With `--show-unchanged-values`, when every child is unchanged, the full table of ⏺️
       rows is rendered.
 - [ ] Create and delete parents render their child tables exactly as before.
 - [ ] The parent summary line's child counts are unchanged.
-- [ ] The mixed inline-and-separate warning is still shown when every child row is hidden.
+- [ ] The mixed inline-and-separate warning is still shown whenever the child section is
+      rendered.
+- [ ] The NSG documentation in `docs/features.md` no longer says that unchanged security
+      rules are always shown.
 - [ ] Code analysis findings for a merged child are still shown in the parent section when
       that child's row is hidden.
 - [ ] Firewall rule collection, build definition and variable group tables render exactly
@@ -155,24 +163,23 @@ No new error conditions. Plans without parent-child resources produce identical 
       option also includes unchanged child rows.
 - [ ] Output renders correctly in Azure DevOps and GitHub pull requests.
 
+## Decisions
+
+The Maintainer answered the questions raised with the first draft of this specification:
+
+1. When every child is unchanged, the whole child-table section is omitted, with no heading,
+   no table and no note.
+2. A hidden-count note is shown below a child table whenever rows were hidden, using the
+   table's child label with correct singular or plural. It is never shown when nothing was
+   hidden, when the section is omitted, or with `--show-unchanged-values`.
+3. NSG security rules follow the same rule as every other child table; the NSG
+   documentation is updated to match.
+4. Firewall rule collection, build definition and variable group tables are out of scope.
+5. On a parent replace, unchanged children are hidden too, as attribute tables do.
+
 ## Open Questions and Assumptions
 
-Each is also recorded in `state.json` with the assumption in force.
-
-1. When every child is unchanged, should the table be omitted silently, or replaced by a
-   note? Assumed: the heading stays and a one-line note replaces the table, matching the
-   existing `_No attribute changes._` note for attribute tables.
-2. Should a note state how many unchanged children were hidden (for example
-   `_8 unchanged routes hidden._`)? Assumed: no. Attribute tables hide unchanged rows
-   without a count, and `--show-unchanged-values` is the documented way to see them.
-3. `docs/features.md` states that unchanged NSG security rules are shown with ⏺️ "for
-   completeness", and NSG security rules are a parent-child pattern. Does this feature
-   override that? Assumed: yes. The reporter asks for all inline child tables to behave the
-   same, and the NSG statement predates the unchanged-values rule for child tables.
-4. Should the firewall rule collection, build definition and variable group tables, which
-   also show ⏺️ rows but are provider-specific templates rather than parent-child grouping,
-   follow the same rule? Assumed: no, out of scope for this feature; a follow-up can extend
-   it.
-5. On a replace, the whole parent is recreated, including unchanged children. Should
-   unchanged children still be hidden? Assumed: yes, matching attribute tables, which hide
-   unchanged attributes on a replace too.
+1. A parent with children managed both inline and as separate resources shows a warning
+   inside its child section. When every child is unchanged, the section is omitted. Should
+   the warning still be shown? Assumed: no, it is omitted with the section, following
+   decision 1 literally; `--show-unchanged-values` shows it as today.

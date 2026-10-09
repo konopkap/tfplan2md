@@ -14,30 +14,46 @@
       "q": "When every child of an inline child table is unchanged (and --show-unchanged-values is not set), should the table be omitted silently or replaced by a one-line note?",
       "assumed": "Keep the child section heading and replace the table with a one-line italic note (e.g. '_No route changes._'), matching the existing '_No attribute changes._' note for attribute tables.",
       "raised_by": "requirements-engineer",
-      "raised_at": "2026-10-09"
+      "raised_at": "2026-10-09",
+      "resolved": true,
+      "answer": "Omit the whole child-table section: no heading, no table, no note."
     },
     {
       "q": "Should a child table note how many unchanged children were hidden (e.g. '_8 unchanged routes hidden._')?",
       "assumed": "No. Attribute tables hide unchanged rows without a count; --show-unchanged-values is the documented way to see them.",
       "raised_by": "requirements-engineer",
-      "raised_at": "2026-10-09"
+      "raised_at": "2026-10-09",
+      "resolved": true,
+      "answer": "Show a hidden-count note below the table when rows were hidden, using the table child label with singular/plural; not shown when nothing was hidden, when the section is omitted, or with --show-unchanged-values."
     },
     {
       "q": "docs/features.md says unchanged NSG security rules are shown with ⏺️ 'for completeness', and NSG security rules are a parent-child pattern. Does this feature override that?",
       "assumed": "Yes. All parent-child child tables, including NSG security rules, hide unchanged rows by default, as the reporter asks for uniform behaviour.",
       "raised_by": "requirements-engineer",
-      "raised_at": "2026-10-09"
+      "raised_at": "2026-10-09",
+      "resolved": true,
+      "answer": "Assumption confirmed: NSG security rules are hidden too; docs updated."
     },
     {
       "q": "Should provider-specific tables outside parent-child grouping that also show ⏺️ rows (firewall rule collections, build definition, variable group) follow the same rule?",
       "assumed": "No, out of scope; they render as today. A follow-up can extend the rule.",
       "raised_by": "requirements-engineer",
-      "raised_at": "2026-10-09"
+      "raised_at": "2026-10-09",
+      "resolved": true,
+      "answer": "Assumption confirmed: out of scope."
     },
     {
       "q": "On a parent replace, should unchanged children still be hidden?",
       "assumed": "Yes, matching attribute tables, which hide unchanged attributes on a replace too.",
       "raised_by": "requirements-engineer",
+      "raised_at": "2026-10-09",
+      "resolved": true,
+      "answer": "Assumption confirmed: hide unchanged children on replace too."
+    },
+    {
+      "q": "When every child is unchanged the child section is omitted; should the mixed inline-and-separate warning inside that section still be shown?",
+      "assumed": "No, it is omitted with the section (decision 1 taken literally); --show-unchanged-values shows it as today.",
+      "raised_by": "architect",
       "raised_at": "2026-10-09"
     }
   ]
