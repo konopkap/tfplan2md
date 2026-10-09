@@ -52,7 +52,7 @@ public class DisplayFilteringStageTests
     public async Task DisplayFilteringStage_Build_FiltersNoOpResources()
     {
         // Arrange
-        var stage = new DisplayFilteringStage(ignoreAzureIdCaseChanges: false);
+        var stage = new DisplayFilteringStage(ignoreAzureIdCaseChanges: false, showUnchangedValues: true);
         var changes = new List<ResourceChangeModel>
         {
             CreateResourceModel("r1", "create"),
@@ -77,7 +77,7 @@ public class DisplayFilteringStageTests
     public async Task DisplayFilteringStage_Build_FiltersAzureIdCaseOnlyUpdatesWhenEnabled()
     {
         // Arrange
-        var stage = new DisplayFilteringStage(ignoreAzureIdCaseChanges: true);
+        var stage = new DisplayFilteringStage(ignoreAzureIdCaseChanges: true, showUnchangedValues: true);
         var changes = new List<ResourceChangeModel>
         {
             CreateResourceModel("r1", "update", attributeChanges: []), // All attribute changes were suppressed
@@ -100,7 +100,7 @@ public class DisplayFilteringStageTests
     public async Task DisplayFilteringStage_Build_DoesNotFilterWhenAzureIdCaseChangesDisabled()
     {
         // Arrange
-        var stage = new DisplayFilteringStage(ignoreAzureIdCaseChanges: false);
+        var stage = new DisplayFilteringStage(ignoreAzureIdCaseChanges: false, showUnchangedValues: true);
         var changes = new List<ResourceChangeModel>
         {
             CreateResourceModel("r1", "update", attributeChanges: [])
@@ -122,7 +122,7 @@ public class DisplayFilteringStageTests
     public async Task DisplayFilteringStage_Build_NormalizesModuleAddresses()
     {
         // Arrange
-        var stage = new DisplayFilteringStage(ignoreAzureIdCaseChanges: false);
+        var stage = new DisplayFilteringStage(ignoreAzureIdCaseChanges: false, showUnchangedValues: true);
         var changes = new List<ResourceChangeModel>
         {
             CreateResourceModel("r1", "create", moduleAddress: null),
@@ -145,7 +145,7 @@ public class DisplayFilteringStageTests
     public async Task DisplayFilteringStage_Build_PreservesUpdatesWithImportIds()
     {
         // Arrange
-        var stage = new DisplayFilteringStage(ignoreAzureIdCaseChanges: true);
+        var stage = new DisplayFilteringStage(ignoreAzureIdCaseChanges: true, showUnchangedValues: true);
         var changes = new List<ResourceChangeModel>
         {
             CreateResourceModel("r1", "update", attributeChanges: [], importId: "/subscriptions/abc123/resourceGroups/my-rg")
@@ -167,7 +167,7 @@ public class DisplayFilteringStageTests
     public async Task DisplayFilteringStage_Build_PreservesUpdatesWithMovedFromAddresses()
     {
         // Arrange
-        var stage = new DisplayFilteringStage(ignoreAzureIdCaseChanges: true);
+        var stage = new DisplayFilteringStage(ignoreAzureIdCaseChanges: true, showUnchangedValues: true);
         var changes = new List<ResourceChangeModel>
         {
             CreateResourceModel("r1", "update", attributeChanges: [], movedFromAddress: "old.address")
@@ -189,7 +189,7 @@ public class DisplayFilteringStageTests
     public async Task DisplayFilteringStage_Build_PreservesUpdatesWithUnknownAfterApply()
     {
         // Arrange
-        var stage = new DisplayFilteringStage(ignoreAzureIdCaseChanges: true);
+        var stage = new DisplayFilteringStage(ignoreAzureIdCaseChanges: true, showUnchangedValues: true);
         var changes = new List<ResourceChangeModel>
         {
             CreateResourceModel("r1", "update", attributeChanges: [], hasWholeResourceUnknownAfterApply: true)

@@ -6,18 +6,26 @@ namespace Oocx.TfPlan2Md.MarkdownGeneration.Stages;
 
 /// <summary>
 /// Filters merged resource changes for display by removing no-op resources
-/// and Azure ID case-only changes (when enabled), then normalizes module addresses.
+/// and Azure ID case-only changes (when enabled), hides unchanged child rows
+/// unless unchanged values are shown, then normalizes module addresses.
 /// </summary>
 /// <remarks>
 /// Filtering occurs after parent-child merging to ensure visual grouping
 /// does not affect which resources are displayed.
+/// Child rows are filtered last, so everything that needs the full row set (resource-level
+/// filters here, summary counts and post-merge callbacks earlier) has already run. Code that runs
+/// after this stage sees only visible rows; <see cref="ChildResourceGroup.HiddenUnchangedCount"/> keeps the count.
 /// Related features:
 /// - docs/features/068-parent-child-resource-grouping/specification.md
-/// - docs/features/103-azure-id-case-insensitive-filter/specification.md.
+/// - docs/features/103-azure-id-case-insensitive-filter/specification.md
+/// - docs/features/149-hide-unchanged-child-rows/architecture.md.
 /// </remarks>
-internal class DisplayFilteringStage(bool ignoreAzureIdCaseChanges) : IDisplayFilteringStage
+/// <param name="ignoreAzureIdCaseChanges">Whether resources whose only changes are Azure ID casing are dropped.</param>
+/// <param name="showUnchangedValues">Whether unchanged child rows stay in the child tables.</param>
+internal class DisplayFilteringStage(bool ignoreAzureIdCaseChanges, bool showUnchangedValues) : IDisplayFilteringStage
 {
     private readonly bool _ignoreAzureIdCaseChanges = ignoreAzureIdCaseChanges;
+    private readonly bool _showUnchangedValues = showUnchangedValues;
 
     /// <inheritdoc />
     public DisplayFilteringResult Build(IReadOnlyList<ResourceChangeModel> mergedChanges)
@@ -53,6 +61,11 @@ internal class DisplayFilteringStage(bool ignoreAzureIdCaseChanges) : IDisplayFi
 
         var filteredResourceCount = afterNoOpFilter.Count - displayChanges.Count;
 
+        if (!_showUnchangedValues)
+        {
+            HideUnchangedChildRows(displayChanges);
+        }
+
         // SonarAnalyzer S3267: Cannot simplify with LINQ - this loop mutates existing objects
         // Justification: This loop modifies ModuleAddress property for null values, not filtering
 #pragma warning disable S3267 // Loops should be simplified using the "Where" LINQ method
@@ -66,6 +79,38 @@ internal class DisplayFilteringStage(bool ignoreAzureIdCaseChanges) : IDisplayFi
 #pragma warning restore S3267
 
         return new DisplayFilteringResult(displayChanges, filteredResourceCount);
+    }
+
+    /// <summary>
+    /// Replaces each parent's child groups with copies whose unchanged rows are removed and counted.
+    /// </summary>
+    /// <param name="displayChanges">The changes that will be rendered.</param>
+    /// <remarks>
+    /// Create and delete parents are skipped so their output stays exactly as before. Every other action is
+    /// filtered, including no-op parents kept for a changed child. Groups with no rows left are kept so
+    /// <c>ChildResourceGroups.Count</c>, the mixed-sources flag and the no-attribute-changes rules still work.
+    /// </remarks>
+    private static void HideUnchangedChildRows(List<ResourceChangeModel> displayChanges)
+    {
+        foreach (var change in displayChanges.Where(c => c.ChildResourceGroups.Count > 0 && c.Action is not (TerraformActions.Create or TerraformActions.Delete)))
+        {
+            change.ChildResourceGroups = change.ChildResourceGroups.Select(HideUnchangedRows).ToList();
+        }
+    }
+
+    /// <summary>
+    /// Copies a group without its unchanged rows.
+    /// </summary>
+    /// <param name="group">The group to filter; it is not modified.</param>
+    /// <returns>A group with the visible rows and the number of rows removed.</returns>
+    private static ChildResourceGroup HideUnchangedRows(ChildResourceGroup group)
+    {
+        var visibleRows = group.Rows.Where(row => row.ChangeIndicator != ActionIcons.Unchanged).ToList();
+        return group with
+        {
+            Rows = visibleRows,
+            HiddenUnchangedCount = group.HiddenUnchangedCount + (group.Rows.Count - visibleRows.Count)
+        };
     }
 
     /// <summary>

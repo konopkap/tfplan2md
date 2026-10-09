@@ -87,24 +87,24 @@ assumption. Keep groups that end up empty. Keep remaining rows in their original
 `HasChildrenWithChanges` must still read the unfiltered rows. Document on
 `ChildResourceGroup.Rows` and on the stage that rows are filtered after this stage.
 **Acceptance Criteria:**
-- [ ] Update parent with ➕🔄❌⏺️ children yields ➕🔄❌ only, `HiddenUnchangedCount == 1`
+- [x] Update parent with ➕🔄❌⏺️ children yields ➕🔄❌ only, `HiddenUnchangedCount == 1`
       (TC-01)
-- [ ] 2 changed and 8 unchanged yields 2 rows and `HiddenUnchangedCount == 8` (TC-02)
-- [ ] `showUnchangedValues: true` leaves groups equal to input (TC-03)
-- [ ] Inline-source, separate-source and mixed-source groups all filter; `HasMixedSources`
+- [x] 2 changed and 8 unchanged yields 2 rows and `HiddenUnchangedCount == 8` (TC-02)
+- [x] `showUnchangedValues: true` leaves groups equal to input (TC-03)
+- [x] Inline-source, separate-source and mixed-source groups all filter; `HasMixedSources`
       is preserved for the mixed group (TC-04, TC-05, TC-06)
-- [ ] Interleaved indicators keep the original order of the remaining rows (TC-07)
-- [ ] Create and delete parents keep groups unchanged, count 0, even with an injected ⏺️
+- [x] Interleaved indicators keep the original order of the remaining rows (TC-07)
+- [x] Create and delete parents keep groups unchanged, count 0, even with an injected ⏺️
       row (TC-08)
-- [ ] All rows unchanged keeps the group with empty `Rows`, the count, `HasMixedSources`
+- [x] All rows unchanged keeps the group with empty `Rows`, the count, `HasMixedSources`
       and `ChildResourceGroups.Count` unchanged (TC-09)
-- [ ] No-op parent with only unchanged children is still dropped; with one changed child
+- [x] No-op parent with only unchanged children is still dropped; with one changed child
       it is kept and its unchanged rows hidden (TC-26)
-- [ ] Replace parent hides unchanged rows (TC-28)
-- [ ] No-op parent kept for a child change hides unchanged rows (TC-29)
-- [ ] Input groups and their `Rows` lists are not mutated (TC-90)
-- [ ] Unknown parent action filters like update (TC-91)
-- [ ] `ReportModelBuilder` passes the flag through (covered by TC-03 and Task 12 integration)
+- [x] Replace parent hides unchanged rows (TC-28)
+- [x] No-op parent kept for a child change hides unchanged rows (TC-29)
+- [x] Input groups and their `Rows` lists are not mutated (TC-90)
+- [x] Unknown parent action filters like update (TC-91)
+- [x] `ReportModelBuilder` passes the flag through (covered by TC-03 and Task 12 integration)
 **Dependencies:** Task 2
 
 ### Task 5: Use the full child count in the no-op security-rule check

@@ -379,7 +379,7 @@ internal partial class ReportModelBuilder
     /// <returns>The default display-filtering stage.</returns>
     private DisplayFilteringStage CreateDisplayFilteringStage()
     {
-        return new DisplayFilteringStage(_ignoreAzureIdCaseChanges);
+        return new DisplayFilteringStage(_ignoreAzureIdCaseChanges, _showUnchangedValues);
     }
 
     /// <summary>
