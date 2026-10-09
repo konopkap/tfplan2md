@@ -21,3 +21,10 @@
 - **Summary:** Not contested (arch_contested=false). Filter unchanged child rows in the report model inside DisplayFilteringStage, after summary counts, provider post-merge callbacks and no-op parent checks have used the full row set. ChildResourceGroup records HiddenUnchangedCount and per-provider item nouns, and groups with no remaining rows are kept so the mixed-sources warning can still render. A shared core helper writes the hidden-count note and warning for DefaultResourceRenderer and NsgMergedSecurityRulesRenderer. The NSG inline-rules path in Providers/AzureRM filters its view-model rows itself and falls back to the default renderer when every rule is hidden. No global ADR: this follows the existing model-side filtering convention.
 - **Artifacts Produced:** docs/features/149-hide-unchanged-child-rows/architecture.md
 - **Problems Encountered:** NsgRenderer's inline-rules path does not render from ChildResourceGroups, so it needs its own filter at render time. DefaultResourceRenderPolicy.IsNoOpParentSecurityRuleScenario depends on Rows.Count == 2 and must use the unfiltered count. The spec scopes filtering to update and replace, but no-op parents also show unchanged rows; recorded as an open question with an assumption.
+
+### Quality Engineer
+
+- **Date:** 2026-10-09
+- **Summary:** Test plan mapping all 19 acceptance criteria to stage, renderer (default, merged NSG, NSG inline), registry, integration, snapshot, CLI and docs tests. UAT plan written for the Maintainer to run (fork contribution; Azure DevOps UAT needs the oocx org) and uat-plan.json contents specified.
+- **Artifacts Produced:** docs/features/149-hide-unchanged-child-rows/test-plan.md, docs/features/149-hide-unchanged-child-rows/uat-test-plan.md
+- **Problems Encountered:** AC 19 (renders correctly in ADO and GitHub PRs) is only automatable as markdown validity; platform check is UAT. Spec says update and replace while architecture filters every action except create and delete; TC-29 covers that assumption.
