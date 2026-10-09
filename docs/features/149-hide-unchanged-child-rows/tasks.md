@@ -62,14 +62,14 @@ plural)`, which writes nothing for `count == 0`, otherwise one italic line
 only when `count == 1`. The helper is added and tested here; the renderers adopt it in
 Tasks 6 and 7.
 **Acceptance Criteria:**
-- [ ] `WriteHiddenUnchangedNote` with count 0 writes no output (TC-92)
-- [ ] Count 1 writes the singular form, for example `_1 unchanged route hidden._` (TC-92)
-- [ ] Count greater than 1 writes the plural form (TC-92)
-- [ ] Count 100 writes `_100 unchanged routes hidden._` with the exact integer (TC-103)
-- [ ] `WriteMixedSourcesWarning` text equals `⚠️ **Warning:** This resource has children
+- [x] `WriteHiddenUnchangedNote` with count 0 writes no output (TC-92)
+- [x] Count 1 writes the singular form, for example `_1 unchanged route hidden._` (TC-92)
+- [x] Count greater than 1 writes the plural form (TC-92)
+- [x] Count 100 writes `_100 unchanged routes hidden._` with the exact integer (TC-103)
+- [x] `WriteMixedSourcesWarning` text equals `⚠️ **Warning:** This resource has children
       managed both inline and as separate resources. This configuration will cause
       conflicts.` followed by a blank line (TC-93)
-- [ ] The note is a single line matching `^_\d+ unchanged .+ hidden\._$` (supports AC 6, 7)
+- [x] The note is a single line matching `^_\d+ unchanged .+ hidden\._$` (supports AC 6, 7)
 **Dependencies:** None
 
 ### Task 4: Filter unchanged child rows in DisplayFilteringStage
