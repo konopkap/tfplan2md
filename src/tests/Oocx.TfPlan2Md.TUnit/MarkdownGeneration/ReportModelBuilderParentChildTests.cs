@@ -634,6 +634,8 @@ public class ReportModelBuilderParentChildTests
                 InlineAttributeName = "members",
                 ChildReferenceAttribute = "parent_id",
                 ChildGroupLabel = "Members",
+                ItemNameSingular = "item",
+                ItemNamePlural = "items",
                 TableColumns = [new ChildTableColumn("Member", "member")],
                 RowExtractor = new MemberRowExtractor()
             });

@@ -99,6 +99,8 @@ public class ProviderContributionSetTests
                 ChildReferenceAttribute = "parent_id",
                 ParentIdAttribute = "id",
                 ChildGroupLabel = "Children",
+                ItemNameSingular = "item",
+                ItemNamePlural = "items",
                 TableColumns = [new ChildTableColumn("Name", "name")],
                 RowExtractor = new SyntheticChildRowExtractor()
             });

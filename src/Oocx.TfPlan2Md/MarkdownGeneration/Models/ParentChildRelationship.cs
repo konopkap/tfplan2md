@@ -47,6 +47,18 @@ internal sealed record ParentChildRelationship
     public required string ChildGroupLabel { get; init; }
 
     /// <summary>
+    /// Gets the singular noun for one child in the hidden-rows note.
+    /// </summary>
+    /// <value>For example <c>route</c>. The label cannot be reduced to a noun mechanically, for example <c>DNS Records</c>.</value>
+    public required string ItemNameSingular { get; init; }
+
+    /// <summary>
+    /// Gets the plural noun for several children in the hidden-rows note.
+    /// </summary>
+    /// <value>For example <c>routes</c>.</value>
+    public required string ItemNamePlural { get; init; }
+
+    /// <summary>
     /// Gets the column definitions for the child table.
     /// </summary>
     /// <value>The ordered list of table columns.</value>

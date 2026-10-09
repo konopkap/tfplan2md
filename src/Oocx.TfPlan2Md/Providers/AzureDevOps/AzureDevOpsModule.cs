@@ -184,6 +184,8 @@ internal sealed class AzureDevOpsModule : IProvider, IValueFormatterProvider, II
             ChildReferenceAttribute = "group",
             ParentIdAttribute = "descriptor",
             ChildGroupLabel = "Members",
+            ItemNameSingular = "member",
+            ItemNamePlural = "members",
             TableColumns = [new ChildTableColumn("Member", "member")],
             RowExtractor = new AzureDevOpsDescriptorRowExtractor(
                 columnKey: "member",
@@ -198,6 +200,8 @@ internal sealed class AzureDevOpsModule : IProvider, IValueFormatterProvider, II
             InlineAttributeName = "members",
             ChildReferenceAttribute = "team_id",
             ChildGroupLabel = "Members",
+            ItemNameSingular = "member",
+            ItemNamePlural = "members",
             TableColumns = [new ChildTableColumn("Member", "member")],
             RowExtractor = new AzureDevOpsDescriptorRowExtractor(
                 columnKey: "member",
@@ -212,6 +216,8 @@ internal sealed class AzureDevOpsModule : IProvider, IValueFormatterProvider, II
             InlineAttributeName = "administrators",
             ChildReferenceAttribute = "team_id",
             ChildGroupLabel = "Administrators",
+            ItemNameSingular = "administrator",
+            ItemNamePlural = "administrators",
             TableColumns = [new ChildTableColumn("Administrator", "administrator")],
             RowExtractor = new AzureDevOpsDescriptorRowExtractor(
                 columnKey: "administrator",

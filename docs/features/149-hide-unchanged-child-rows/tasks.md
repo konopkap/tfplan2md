@@ -38,17 +38,17 @@ the values from architecture.md (Routes/route, Subnets/subnet, Security Rules/se
 DNS Records/DNS record, Members/member, Administrators/administrator). Do not derive nouns
 from the label. Keep provider nouns out of `MarkdownGeneration/` and `Models`.
 **Acceptance Criteria:**
-- [ ] `ChildResourceGroup` exposes `HiddenUnchangedCount` (default 0), `ItemNameSingular`
+- [x] `ChildResourceGroup` exposes `HiddenUnchangedCount` (default 0), `ItemNameSingular`
       and `ItemNamePlural`
-- [ ] Every `ParentChildRelationship` registration in the three provider modules defines
+- [x] Every `ParentChildRelationship` registration in the three provider modules defines
       non-empty singular and plural nouns (TC-15), with the exact values listed above
-- [ ] Merged groups copy the nouns from the relationship (TC-100, first half)
-- [ ] `MergeGroupsByLabel` takes the nouns from the first group when two groups share a
+- [x] Merged groups copy the nouns from the relationship (TC-100, first half)
+- [x] `MergeGroupsByLabel` takes the nouns from the first group when two groups share a
       label (TC-100, second half)
-- [ ] Architecture test fails if `MarkdownGeneration/` or `Models` contains the literals
+- [x] Architecture test fails if `MarkdownGeneration/` or `Models` contains the literals
       `route`, `subnet` or `security rule` as provider nouns (TC-101)
-- [ ] Group-level default (`HiddenUnchangedCount == 0`) is covered (TC-09 model part)
-- [ ] Existing unit tests pass without changing their expected output
+- [x] Group-level default (`HiddenUnchangedCount == 0`) is covered (TC-09 model part)
+- [x] Existing unit tests pass without changing their expected output
 **Dependencies:** None
 
 ### Task 3: Add the shared child-table helper to the core renderer

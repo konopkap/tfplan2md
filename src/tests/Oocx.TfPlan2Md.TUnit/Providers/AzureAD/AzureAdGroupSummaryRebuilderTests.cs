@@ -132,6 +132,8 @@ public class AzureAdGroupSummaryRebuilderTests
                     new()
                     {
                         Label = "Members",
+                        ItemNameSingular = "member",
+                        ItemNamePlural = "members",
                         Columns = new List<ChildTableColumn>(),
                         Rows = new List<ChildResourceRow>
                         {
@@ -385,6 +387,8 @@ public class AzureAdGroupSummaryRebuilderTests
                     new()
                     {
                         Label = "Members",
+                        ItemNameSingular = "member",
+                        ItemNamePlural = "members",
                         Columns = new List<ChildTableColumn>(),
                         Rows = new List<ChildResourceRow>
                         {
@@ -435,6 +439,8 @@ public class AzureAdGroupSummaryRebuilderTests
                     new()
                     {
                         Label = "Members",
+                        ItemNameSingular = "member",
+                        ItemNamePlural = "members",
                         Columns = new List<ChildTableColumn>(),
                         Rows = new List<ChildResourceRow>
                         {
@@ -485,6 +491,8 @@ public class AzureAdGroupSummaryRebuilderTests
                     new()
                     {
                         Label = "Members",
+                        ItemNameSingular = "member",
+                        ItemNamePlural = "members",
                         Columns = new List<ChildTableColumn>(),
                         Rows = new List<ChildResourceRow>
                         {

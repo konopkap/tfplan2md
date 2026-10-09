@@ -71,6 +71,8 @@ public class ParentChildRelationshipRegistryTests
             ParentResourceType = parentType,
             ChildResourceType = childType,
             ChildGroupLabel = label,
+            ItemNameSingular = "item",
+            ItemNamePlural = "items",
             TableColumns = [new ChildTableColumn("Member", "member")],
             RowExtractor = new DummyRowExtractor()
         };

@@ -391,6 +391,8 @@ public class ReportModelBuilderParentChildEdgeCaseTests
                 ChildReferenceAttribute = "parent_id",
                 ParentIdAttribute = "id",
                 ChildGroupLabel = "Children",
+                ItemNameSingular = "item",
+                ItemNamePlural = "items",
                 TableColumns = [new ChildTableColumn("Child", "child")],
                 RowExtractor = new EdgeCaseRowExtractor()
             });
@@ -433,6 +435,8 @@ public class ReportModelBuilderParentChildEdgeCaseTests
                 InlineAttributeName = "members",
                 ChildReferenceAttribute = "parent_id",
                 ChildGroupLabel = "Members",
+                ItemNameSingular = "item",
+                ItemNamePlural = "items",
                 TableColumns = [new ChildTableColumn("Member", "member")],
                 RowExtractor = new EdgeCaseRowExtractor()
             });
@@ -511,6 +515,8 @@ public class ReportModelBuilderParentChildEdgeCaseTests
                 InlineAttributeName = null,
                 ChildReferenceAttribute = "parent_id",
                 ChildGroupLabel = "Members",
+                ItemNameSingular = "item",
+                ItemNamePlural = "items",
                 TableColumns = [new ChildTableColumn("Member", "member")],
                 RowExtractor = new ThrowingRowExtractor()
             });
@@ -578,6 +584,8 @@ public class ReportModelBuilderParentChildEdgeCaseTests
                 InlineAttributeName = null,
                 ChildReferenceAttribute = "parent_id",
                 ChildGroupLabel = "Members",
+                ItemNameSingular = "item",
+                ItemNamePlural = "items",
                 TableColumns = [new ChildTableColumn("Member", "member")],
                 RowExtractor = new InvalidJsonRowExtractor()
             });

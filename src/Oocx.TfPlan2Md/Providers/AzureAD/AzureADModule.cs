@@ -130,6 +130,8 @@ internal sealed class AzureADModule : IProvider, IValueFormatterProvider, IIconR
             InlineAttributeName = "members",
             ChildReferenceAttribute = "group_object_id",
             ChildGroupLabel = "Members",
+            ItemNameSingular = "member",
+            ItemNamePlural = "members",
             TableColumns = [new ChildTableColumn("Member", "member")],
             RowExtractor = new AzureAdGroupMemberRowExtractor()
         });

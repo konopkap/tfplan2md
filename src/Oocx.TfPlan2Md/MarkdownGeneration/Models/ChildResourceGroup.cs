@@ -26,7 +26,29 @@ public sealed record ChildResourceGroup
     /// Gets the row data for each child entry.
     /// </summary>
     /// <value>The ordered list of child rows.</value>
+    /// <remarks>
+    /// Unchanged rows are removed by <c>DisplayFilteringStage</c> unless unchanged values are shown, so code that
+    /// runs after that stage sees only the visible rows. Use <see cref="HiddenUnchangedCount"/> for the full count.
+    /// </remarks>
     public required IReadOnlyList<ChildResourceRow> Rows { get; init; }
+
+    /// <summary>
+    /// Gets the number of unchanged rows removed from <see cref="Rows"/> before rendering.
+    /// </summary>
+    /// <value>Zero when nothing was hidden or unchanged values are shown.</value>
+    public int HiddenUnchangedCount { get; init; }
+
+    /// <summary>
+    /// Gets the singular noun for one child, used in the hidden-rows note.
+    /// </summary>
+    /// <value>For example <c>route</c>. Provided by the provider registration, never derived from <see cref="Label"/>.</value>
+    public required string ItemNameSingular { get; init; }
+
+    /// <summary>
+    /// Gets the plural noun for several children, used in the hidden-rows note.
+    /// </summary>
+    /// <value>For example <c>routes</c>.</value>
+    public required string ItemNamePlural { get; init; }
 
     /// <summary>
     /// Gets a value indicating whether both inline and separate children were detected.

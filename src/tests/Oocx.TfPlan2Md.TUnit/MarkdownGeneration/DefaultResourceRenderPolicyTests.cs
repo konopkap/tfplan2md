@@ -26,6 +26,8 @@ public class DefaultResourceRenderPolicyTests
             new ChildResourceGroup
             {
                 Label = "Security Rules",
+                ItemNameSingular = "security rule",
+                ItemNamePlural = "security rules",
                 Columns = [new ChildTableColumn("Name", "name")],
                 Rows =
                 [

@@ -127,6 +127,8 @@ internal sealed class AzureRMModule : IProvider, IValueFormatterProvider, IIconR
             ChildReferenceAttribute = "virtual_network_name",
             ParentIdAttribute = "name",
             ChildGroupLabel = "Subnets",
+            ItemNameSingular = "subnet",
+            ItemNamePlural = "subnets",
             TableColumns =
             [
                 new ChildTableColumn("Name", "name"),
@@ -146,6 +148,8 @@ internal sealed class AzureRMModule : IProvider, IValueFormatterProvider, IIconR
             ChildReferenceAttribute = "route_table_name",
             ParentIdAttribute = "name",
             ChildGroupLabel = "Routes",
+            ItemNameSingular = "route",
+            ItemNamePlural = "routes",
             TableColumns =
             [
                 new ChildTableColumn("Name", "name"),
@@ -165,6 +169,8 @@ internal sealed class AzureRMModule : IProvider, IValueFormatterProvider, IIconR
             ChildReferenceAttribute = "network_security_group_name",
             ParentIdAttribute = "name",
             ChildGroupLabel = "Security Rules",
+            ItemNameSingular = AzureRmChildItemNames.SecurityRuleSingular,
+            ItemNamePlural = AzureRmChildItemNames.SecurityRulePlural,
             TableColumns =
             [
                 new ChildTableColumn("Name", "name"),
@@ -214,6 +220,8 @@ internal sealed class AzureRMModule : IProvider, IValueFormatterProvider, IIconR
                 ChildReferenceAttribute = "zone_name",
                 ParentIdAttribute = "name",
                 ChildGroupLabel = "DNS Records",
+                ItemNameSingular = "DNS record",
+                ItemNamePlural = "DNS records",
                 TableColumns = dnsColumns,
                 RowExtractor = dnsRecordExtractor
             });
@@ -241,6 +249,8 @@ internal sealed class AzureRMModule : IProvider, IValueFormatterProvider, IIconR
                 ChildReferenceAttribute = "zone_name",
                 ParentIdAttribute = "name",
                 ChildGroupLabel = "DNS Records",
+                ItemNameSingular = "DNS record",
+                ItemNamePlural = "DNS records",
                 TableColumns = dnsColumns,
                 RowExtractor = dnsRecordExtractor
             });

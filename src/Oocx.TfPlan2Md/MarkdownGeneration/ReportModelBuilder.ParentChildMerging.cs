@@ -67,6 +67,8 @@ internal partial class ReportModelBuilder
                     Label = relationship.ChildGroupLabel,
                     Columns = relationship.TableColumns,
                     Rows = rows,
+                    ItemNameSingular = relationship.ItemNameSingular,
+                    ItemNamePlural = relationship.ItemNamePlural,
                     HasMixedSources = inlineRows.Count > 0 && separateRows.Count > 0,
                     HasExternalResources = rows.Exists(r => !string.IsNullOrEmpty(r.TerraformResource) &&
                                                              !r.TerraformResource.Contains("attribute"))
@@ -150,6 +152,8 @@ internal partial class ReportModelBuilder
                 Label = firstGroup.Label,
                 Columns = firstGroup.Columns, // Use first group's columns (should be same for same label)
                 Rows = allRows,
+                ItemNameSingular = firstGroup.ItemNameSingular,
+                ItemNamePlural = firstGroup.ItemNamePlural,
                 HasMixedSources = hasAnyMixedSources,
                 HasExternalResources = hasAnyExternalResources
             };
