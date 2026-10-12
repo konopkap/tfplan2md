@@ -243,11 +243,11 @@ already checks documentation consistency, with string assertions on `README.md` 
 `docs/features.md`: the NSG phrases are gone (TC-70) and the option entries mention child
 rows (TC-72). Assertions check the file contents and fail on the old wording.
 **Acceptance Criteria:**
-- [ ] TC-70: the test fails when `docs/features.md` contains "shown for completeness" in the
+- [x] TC-70: the test fails when `docs/features.md` contains "shown for completeness" in the
       NSG section and passes after Task 10
-- [ ] TC-72: the test fails when the `--show-unchanged-values` option entry in `README.md` or
+- [x] TC-72: the test fails when the `--show-unchanged-values` option entry in `README.md` or
       `docs/features.md` lacks a mention of child rows, and passes after Task 10
-- [ ] Test names follow `MethodName_Scenario_ExpectedResult`
+- [x] Test names follow `MethodName_Scenario_ExpectedResult`
 **Dependencies:** Task 10
 
 ### Task 12: Route-table integration tests (separate, inline, replace, create/delete)

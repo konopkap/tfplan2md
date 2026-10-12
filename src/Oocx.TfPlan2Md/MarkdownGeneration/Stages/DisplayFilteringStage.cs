@@ -101,11 +101,15 @@ internal class DisplayFilteringStage(bool ignoreAzureIdCaseChanges, bool showUnc
     /// <summary>
     /// Copies a group without its unchanged rows.
     /// </summary>
+    /// <remarks>
+    /// Only rows marked <see cref="ChildResourceRow.IsUnchanged"/> are hidden. Children with other actions, such as
+    /// forget, also show the unchanged icon but are kept so the report does not silently drop them.
+    /// </remarks>
     /// <param name="group">The group to filter; it is not modified.</param>
     /// <returns>A group with the visible rows and the number of rows removed.</returns>
     private static ChildResourceGroup HideUnchangedRows(ChildResourceGroup group)
     {
-        var visibleRows = group.Rows.Where(row => row.ChangeIndicator != ActionIcons.Unchanged).ToList();
+        var visibleRows = group.Rows.Where(row => !row.IsUnchanged).ToList();
         return group with
         {
             Rows = visibleRows,

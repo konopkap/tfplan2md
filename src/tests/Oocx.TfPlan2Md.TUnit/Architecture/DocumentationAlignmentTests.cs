@@ -74,7 +74,7 @@ public class DocumentationAlignmentTests
         var start = content.IndexOf(heading, StringComparison.Ordinal);
         start.Should().BeGreaterThanOrEqualTo(0, because: "features.md documents the NSG renderer");
         var end = content.IndexOf("\n#### ", start + heading.Length, StringComparison.Ordinal);
-        var section = content[start..end];
+        var section = end == -1 ? content[start..] : content[start..end];
 
         section.Should().NotContain("for completeness");
         section.Should().Contain("Hidden by default");

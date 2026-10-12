@@ -29,6 +29,32 @@ public class DisplayFilteringStageChildRowTests
     }
 
     /// <summary>
+    /// Verifies a row shown with the unchanged icon but not marked unchanged (for example a forgotten child) is kept.
+    /// </summary>
+    [Test]
+    public void Filter_UnchangedIconRowNotMarkedUnchanged_IsKept()
+    {
+        var group = CreateGroup(ActionIcons.Update) with
+        {
+            Rows =
+            [
+                new ChildResourceRow
+                {
+                    ChangeIndicator = ActionIcons.Unchanged,
+                    Values = new Dictionary<string, string> { ["name"] = "forgotten" },
+                    TerraformResource = "test_child.forgotten"
+                }
+            ]
+        };
+        var parent = CreateParent("update", group);
+
+        var result = Filter(parent, showUnchangedValues: false).ChildResourceGroups.Single();
+
+        result.Rows.Should().ContainSingle().Which.TerraformResource.Should().Be("test_child.forgotten");
+        result.HiddenUnchangedCount.Should().Be(0);
+    }
+
+    /// <summary>
     /// Verifies every removed row is counted (TC-02).
     /// </summary>
     [Test]
@@ -286,6 +312,7 @@ public class DisplayFilteringStageChildRowTests
                 .Select((indicator, index) => new ChildResourceRow
                 {
                     ChangeIndicator = indicator,
+                    IsUnchanged = indicator == ActionIcons.Unchanged,
                     Values = new Dictionary<string, string> { ["name"] = $"row-{index}" },
                     TerraformResource = inlineAttribute ? "route attribute" : $"test_child.row_{index}"
                 })

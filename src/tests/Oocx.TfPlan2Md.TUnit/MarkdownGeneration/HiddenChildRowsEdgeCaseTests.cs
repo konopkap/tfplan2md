@@ -3,6 +3,8 @@ using System.Text.Json.Nodes;
 using AwesomeAssertions;
 using Oocx.TfPlan2Md.CodeAnalysis;
 using Oocx.TfPlan2Md.MarkdownGeneration;
+using Oocx.TfPlan2Md.MarkdownGeneration.Services;
+using Oocx.TfPlan2Md.Platforms.Azure;
 using Oocx.TfPlan2Md.Providers.AzureRM;
 using Oocx.TfPlan2Md.Tests.TestData;
 using TUnit.Core;
@@ -67,6 +69,24 @@ public class HiddenChildRowsEdgeCaseTests
     }
 
     /// <summary>
+    /// Verifies a forgotten child keeps its row and indicator: only no-op children are hidden, not every ⏺️ row.
+    /// </summary>
+    [Test]
+    public void Render_ForgottenSeparateChild_IsNotHidden()
+    {
+        var plan = File.ReadAllText(Path.Combine("TestData", "azurerm-route-table-forgotten-route-plan.json"));
+
+        var hidden = ChildTableRendering.Render(plan, showUnchangedValues: false);
+        var shown = ChildTableRendering.Render(plan, showUnchangedValues: true);
+
+        hidden.Should().Contain("#### Routes");
+        hidden.Should().NotContain("hidden.");
+        var forgottenRow = shown.Split('\n').Single(line => line.Contains("azurerm_route.forgotten", StringComparison.Ordinal));
+        forgottenRow.Should().StartWith("| ⏺️ |");
+        hidden.Split('\n').Should().Contain(forgottenRow);
+    }
+
+    /// <summary>
     /// Returns the child table rows, which start with a change icon cell.
     /// </summary>
     /// <param name="markdown">The rendered markdown.</param>
@@ -127,6 +147,62 @@ public class HiddenChildRowsEdgeCaseTests
         var markdown = ChildTableRendering.Render(File.ReadAllText("TestData/nsg-with-no-op-rules.json"), showUnchangedValues: false);
 
         markdown.Should().NotContain("hidden.");
+    }
+
+    /// <summary>
+    /// Pins how <see cref="MarkdownRenderer.RenderResourceChange"/> treats a merged NSG: it renders the model's rows,
+    /// so unchanged rules kept in a model built with unchanged values shown stay visible (TC-56).
+    /// </summary>
+    [Test]
+    public void RenderResourceChange_MergedNsgFromShowUnchangedModel_RendersModelRows()
+    {
+        var change = BuildNsgChange(ChildTableScenarios.NsgSeparateRules(1), showUnchangedValues: true);
+
+        var markdown = CreateAzureRmRenderer().RenderResourceChange(change);
+
+        markdown.Should().Contain("| ⏺️ |");
+        markdown.Should().NotContain("hidden.");
+    }
+
+    /// <summary>
+    /// Pins the inline NSG exception to TC-56: <see cref="MarkdownRenderer.RenderResourceChange"/> always renders with
+    /// unchanged values off, and inline rules are filtered from that flag rather than the model, so unchanged inline
+    /// rules are hidden even when the model was built with unchanged values shown.
+    /// </summary>
+    [Test]
+    public void RenderResourceChange_InlineNsgFromShowUnchangedModel_HidesUnchangedRules()
+    {
+        var change = BuildNsgChange(ChildTableScenarios.NsgInlineRules(2), showUnchangedValues: true);
+
+        var markdown = CreateAzureRmRenderer().RenderResourceChange(change);
+
+        markdown.Should().NotContain("| ⏺️ |").And.NotContain("keep-1");
+        markdown.Should().Contain("modified").And.Contain("_2 unchanged security rules hidden._");
+    }
+
+    /// <summary>
+    /// Builds the report model for a plan and returns its network security group change.
+    /// </summary>
+    /// <param name="planJson">The Terraform plan JSON.</param>
+    /// <param name="showUnchangedValues">Whether the model keeps unchanged values and child rows.</param>
+    /// <returns>The NSG change model.</returns>
+    private static ResourceChangeModel BuildNsgChange(string planJson, bool showUnchangedValues)
+    {
+        return ChildTableRendering.BuildModel(planJson, showUnchangedValues).Changes
+            .Single(c => c.Type == "azurerm_network_security_group");
+    }
+
+    /// <summary>
+    /// Creates a markdown renderer with the AzureRM provider registered.
+    /// </summary>
+    /// <returns>The renderer.</returns>
+    private static MarkdownRenderer CreateAzureRmRenderer()
+    {
+        var registry = new ProviderRegistry();
+        registry.RegisterProvider(new AzureRMModule(
+            largeValueFormat: LargeValueFormat.InlineDiff,
+            principalMapper: new NullPrincipalMapper()));
+        return new MarkdownRenderer(providerRegistry: registry);
     }
 
     /// <summary>

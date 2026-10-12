@@ -16,7 +16,7 @@ internal static class ChildTableSection
     /// <param name="writer">The markdown writer.</param>
     internal static void WriteMixedSourcesWarning(MarkdownWriter writer)
     {
-        writer.Paragraph("⚠️ **Warning:** This resource has children managed both inline and as separate resources. This configuration will cause conflicts.");
+        writer.Paragraph($"⚠️{MarkdownHelpers.NonBreakingSpace}**Warning:** This resource has children managed both inline and as separate resources. This configuration will cause conflicts.");
         writer.BlankLine();
     }
 

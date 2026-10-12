@@ -302,7 +302,7 @@ internal partial class ReportModelBuilder
                     // Unchanged: values are identical
                     if (TryBuildInlineRow(parent, relationship, entry.Element, ActionIcons.Unchanged, attributeName, out var row))
                     {
-                        rows.Add(row);
+                        rows.Add(row with { IsUnchanged = true });
                     }
                 }
                 else
@@ -797,6 +797,7 @@ internal partial class ReportModelBuilder
         return new ChildResourceRow
         {
             ChangeIndicator = GetChildActionIndicator(child.Action),
+            IsUnchanged = child.Action == TerraformActions.NoOp,
             Values = singleStateValues,
             TerraformResource = child.Address,
             OriginalResourceAddress = child.Address
