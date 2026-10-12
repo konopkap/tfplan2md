@@ -124,7 +124,7 @@ internal static class DefaultResourceRenderPolicy
         var securityRuleGroup = change.ChildResourceGroups.FirstOrDefault(group =>
             string.Equals(group.Label, "Security Rules", StringComparison.Ordinal));
 
-        return securityRuleGroup?.Rows.Count == 2;
+        return securityRuleGroup?.Rows.Count + securityRuleGroup?.HiddenUnchangedCount == 2;
     }
 
     /// <summary>

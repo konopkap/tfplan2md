@@ -93,13 +93,23 @@ internal sealed partial class DefaultResourceRenderer
     {
         foreach (var group in childResourceGroups)
         {
+            if (group.Rows.Count == 0)
+            {
+                // Every row was hidden as unchanged: the section is omitted, but the conflict warning stays.
+                if (group.HasMixedSources)
+                {
+                    ChildTableSection.WriteMixedSourcesWarning(writer);
+                }
+
+                continue;
+            }
+
             writer.Heading(group.Label, 4);
             writer.BlankLine();
 
             if (group.HasMixedSources)
             {
-                writer.Paragraph("⚠️\u00A0**Warning:** This resource has children managed both inline and as separate resources. This configuration will cause conflicts.");
-                writer.BlankLine();
+                ChildTableSection.WriteMixedSourcesWarning(writer);
             }
 
             var headers = new List<string> { "Change" };
@@ -134,6 +144,7 @@ internal sealed partial class DefaultResourceRenderer
             }
 
             writer.BlankLine();
+            ChildTableSection.WriteHiddenUnchangedNote(writer, group.HiddenUnchangedCount, group.ItemNameSingular, group.ItemNamePlural);
         }
     }
 

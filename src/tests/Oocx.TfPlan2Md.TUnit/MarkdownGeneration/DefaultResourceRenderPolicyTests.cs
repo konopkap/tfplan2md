@@ -54,6 +54,60 @@ public class DefaultResourceRenderPolicyTests
         await Task.CompletedTask;
     }
 
+    /// <summary>
+    /// Verifies the two-row security-rule scenario counts rows that were hidden as unchanged (TC-27).
+    /// </summary>
+    [Test]
+    public void ResolvePolicy_SecurityRuleGroupWithOneRowOneHidden_UsesFullCount()
+    {
+        var change = CreateChange(resourceType: "azurerm_network_security_group", moduleAddress: null, attributes: []);
+        change.ChildResourceGroups = [CreateSecurityRuleGroup(rowCount: 1, hiddenUnchangedCount: 1)];
+
+        var policy = DefaultResourceRenderPolicy.Resolve(change, CreateContext());
+
+        policy.IsNoOpParentWithChildren.Should().BeTrue();
+    }
+
+    /// <summary>
+    /// Verifies a single visible security rule with nothing hidden is not the two-row scenario (TC-27).
+    /// </summary>
+    [Test]
+    public void ResolvePolicy_SecurityRuleGroupWithOneRowNoneHidden_IsNotTwoRowScenario()
+    {
+        var change = CreateChange(resourceType: "azurerm_network_security_group", moduleAddress: null, attributes: []);
+        change.ChildResourceGroups = [CreateSecurityRuleGroup(rowCount: 1, hiddenUnchangedCount: 0)];
+
+        var policy = DefaultResourceRenderPolicy.Resolve(change, CreateContext());
+
+        policy.IsNoOpParentWithChildren.Should().BeFalse();
+    }
+
+    /// <summary>
+    /// Creates a security-rules group with the given visible and hidden row counts.
+    /// </summary>
+    /// <param name="rowCount">Number of visible rows.</param>
+    /// <param name="hiddenUnchangedCount">Number of rows hidden as unchanged.</param>
+    /// <returns>The security-rules group.</returns>
+    private static ChildResourceGroup CreateSecurityRuleGroup(int rowCount, int hiddenUnchangedCount)
+    {
+        return new ChildResourceGroup
+        {
+            Label = "Security Rules",
+            ItemNameSingular = "security rule",
+            ItemNamePlural = "security rules",
+            Columns = [new ChildTableColumn("Name", "name")],
+            HiddenUnchangedCount = hiddenUnchangedCount,
+            Rows = Enumerable.Range(0, rowCount)
+                .Select(index => new ChildResourceRow
+                {
+                    ChangeIndicator = "➕",
+                    Values = new Dictionary<string, string> { ["name"] = $"rule-{index}" },
+                    TerraformResource = $"azurerm_network_security_rule.rule_{index}"
+                })
+                .ToList()
+        };
+    }
+
     [Test]
     public async Task ResolvePolicy_AzureAdResource_UsesExtraBlankLineBeforeSummary()
     {

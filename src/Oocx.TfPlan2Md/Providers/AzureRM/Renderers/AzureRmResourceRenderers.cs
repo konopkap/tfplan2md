@@ -221,6 +221,13 @@ internal sealed class NsgRenderer : AzureRmDelegatingRenderer
         var mergedSecurityRules = NsgMergedSecurityRulesRenderer.GetMergedSecurityRulesGroup(change);
         if (mergedSecurityRules is not null)
         {
+            if (mergedSecurityRules.Rows.Count == 0)
+            {
+                // Every rule was hidden as unchanged; the default renderer still shows the parent's own attribute changes.
+                base.Render(writer, change, context);
+                return;
+            }
+
             NsgMergedSecurityRulesRenderer.Render(writer, change, context, mergedSecurityRules);
             return;
         }
@@ -237,6 +244,23 @@ internal sealed class NsgRenderer : AzureRmDelegatingRenderer
             return;
         }
 
+        // Inline rules are rendered from this view model, not from the child groups that DisplayFilteringStage filters,
+        // so unchanged rules are dropped here with the same rule: update paths only, and not with --show-unchanged-values.
+        var ruleChanges = viewModel.RuleChanges;
+        var hiddenUnchangedCount = 0;
+        if (!isCreate && !isDelete && !context.ShowUnchangedValues)
+        {
+            ruleChanges = NsgInlineRuleRows.WithoutUnchanged(viewModel.RuleChanges);
+            hiddenUnchangedCount = viewModel.RuleChanges.Count - ruleChanges.Count;
+
+            if (ruleChanges.Count == 0 && hiddenUnchangedCount > 0)
+            {
+                // Without this fallback the section would be an empty details block, because this path renders no attribute table.
+                base.Render(writer, change, context);
+                return;
+            }
+        }
+
         WriteDetailsOpen(writer, change, context);
 
         // Heading is always "Security Rules" regardless of action type to preserve established output.
@@ -245,29 +269,10 @@ internal sealed class NsgRenderer : AzureRmDelegatingRenderer
         ImportPriorStateNoteRenderer.Render(writer, change);
         writer.TableHeader("Change", "Name", "Priority", "Direction", "Access", "Protocol", "Source Addresses", "Source Ports", "Destination Addresses", "Destination Ports", "Description");
 
-        if (isCreate)
-        {
-            foreach (var rule in viewModel.AfterRules)
-            {
-                writer.TableRow([ActionIcons.Add, rule.Name, rule.Priority, rule.Direction, rule.Access, rule.Protocol, rule.SourceAddresses, rule.SourcePorts, rule.DestinationAddresses, rule.DestinationPorts, rule.Description]);
-            }
-        }
-        else if (isDelete)
-        {
-            foreach (var rule in viewModel.BeforeRules)
-            {
-                writer.TableRow([ActionIcons.Delete, rule.Name, rule.Priority, rule.Direction, rule.Access, rule.Protocol, rule.SourceAddresses, rule.SourcePorts, rule.DestinationAddresses, rule.DestinationPorts, rule.Description]);
-            }
-        }
-        else
-        {
-            foreach (var rule in viewModel.RuleChanges)
-            {
-                writer.TableRow([rule.Change, rule.Name, rule.Priority, rule.Direction, rule.Access, rule.Protocol, rule.SourceAddresses, rule.SourcePorts, rule.DestinationAddresses, rule.DestinationPorts, rule.Description]);
-            }
-        }
+        NsgInlineRuleRows.Write(writer, viewModel, isCreate, isDelete, ruleChanges);
 
         writer.BlankLine();
+        ChildTableSection.WriteHiddenUnchangedNote(writer, hiddenUnchangedCount, AzureRmChildItemNames.SecurityRuleSingular, AzureRmChildItemNames.SecurityRulePlural);
         writer.DetailsClose();
         writer.BlankLine();
     }

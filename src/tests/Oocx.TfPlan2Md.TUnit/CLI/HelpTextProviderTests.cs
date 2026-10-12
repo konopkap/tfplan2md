@@ -15,6 +15,19 @@ public class HelpTextProviderTests
         help.Should().Contain("Map principal IDs to names using a JSON file.");
     }
 
+    /// <summary>
+    /// Verifies the show-unchanged-values help line mentions attribute values and unchanged child rows (TC-71).
+    /// </summary>
+    [Test]
+    public void GetHelpText_ShowUnchangedValuesOption_MentionsChildRows()
+    {
+        var line = HelpTextProvider.GetHelpText()
+            .Split('\n')
+            .Single(text => text.Contains("--show-unchanged-values", StringComparison.Ordinal));
+
+        line.Should().Contain("attribute values").And.Contain("unchanged child rows");
+    }
+
     [Test]
     public void GetHelpText_IncludesReportTitleOption()
     {

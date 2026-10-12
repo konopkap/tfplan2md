@@ -1,3 +1,4 @@
+using Oocx.TfPlan2Md.CodeAnalysis;
 using Oocx.TfPlan2Md.MarkdownGeneration;
 using Oocx.TfPlan2Md.MarkdownGeneration.Services;
 using Oocx.TfPlan2Md.Parsing;
@@ -23,12 +24,13 @@ internal static class ChildTableRendering
     /// <param name="showUnchangedValues">Whether unchanged values and child rows are included.</param>
     /// <param name="options">Optional full option set; overrides <paramref name="showUnchangedValues"/> when supplied.</param>
     /// <returns>The rendered markdown.</returns>
-    internal static string Render(string planJson, bool showUnchangedValues, ReportModelBuilderOptions? options = null)
+    /// <param name="codeAnalysis">Optional code analysis input.</param>
+    internal static string Render(string planJson, bool showUnchangedValues, ReportModelBuilderOptions? options = null, CodeAnalysisInput? codeAnalysis = null)
     {
         var effective = options ?? new ReportModelBuilderOptions(ShowUnchangedValues: showUnchangedValues);
         var registry = CreateProviderRegistry(effective);
         var contributions = registry.CreateContributionSet();
-        var model = BuildModel(planJson, effective, registry, contributions);
+        var model = BuildModel(planJson, effective, registry, contributions, codeAnalysis);
         var renderer = new MarkdownRenderer(providerRegistry: registry, providerContributions: contributions);
         return renderer.Render(model);
     }
@@ -54,11 +56,13 @@ internal static class ChildTableRendering
     /// <param name="registry">The provider registry.</param>
     /// <param name="contributions">The provider contribution set.</param>
     /// <returns>The report model.</returns>
+    /// <param name="codeAnalysis">Optional code analysis input.</param>
     private static ReportModel BuildModel(
         string planJson,
         ReportModelBuilderOptions options,
         ProviderRegistry registry,
-        ProviderContributionSet contributions)
+        ProviderContributionSet contributions,
+        CodeAnalysisInput? codeAnalysis = null)
     {
         var plan = new TerraformPlanParser().Parse(planJson);
         var builder = new ReportModelBuilder(
@@ -66,7 +70,8 @@ internal static class ChildTableRendering
             new ReportModelBuilderServices(
                 MetadataProvider: TestMetadataProvider.Instance,
                 ProviderRegistry: registry,
-                ProviderContributions: contributions));
+                ProviderContributions: contributions,
+                CodeAnalysisInput: codeAnalysis));
         return builder.Build(plan);
     }
 

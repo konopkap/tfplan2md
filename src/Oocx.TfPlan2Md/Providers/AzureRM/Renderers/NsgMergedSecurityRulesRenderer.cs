@@ -32,17 +32,31 @@ internal static class NsgMergedSecurityRulesRenderer
     /// <param name="change">The resource change being rendered.</param>
     /// <param name="context">The render context.</param>
     /// <param name="group">The merged security-rules child group.</param>
+    /// <remarks>
+    /// When every rule was hidden as unchanged there is no heading, table or note; only the mixed-sources warning remains.
+    /// </remarks>
     public static void Render(MarkdownWriter writer, ResourceChangeModel change, IRenderContext context, ChildResourceGroup group)
     {
         AzureRmDelegatingRenderer.WriteDetailsOpen(writer, change, context);
+
+        if (group.Rows.Count == 0)
+        {
+            if (group.HasMixedSources)
+            {
+                ChildTableSection.WriteMixedSourcesWarning(writer);
+            }
+
+            writer.DetailsClose();
+            writer.BlankLine();
+            return;
+        }
 
         writer.Heading("Security Rules", 4);
         writer.BlankLine();
 
         if (group.HasMixedSources)
         {
-            writer.Paragraph("⚠️\u00A0**Warning:** This resource has children managed both inline and as separate resources. This configuration will cause conflicts.");
-            writer.BlankLine();
+            ChildTableSection.WriteMixedSourcesWarning(writer);
         }
 
         ImportPriorStateNoteRenderer.Render(writer, change);
@@ -76,6 +90,7 @@ internal static class NsgMergedSecurityRulesRenderer
         }
 
         writer.BlankLine();
+        ChildTableSection.WriteHiddenUnchangedNote(writer, group.HiddenUnchangedCount, group.ItemNameSingular, group.ItemNamePlural);
         writer.DetailsClose();
         writer.BlankLine();
     }

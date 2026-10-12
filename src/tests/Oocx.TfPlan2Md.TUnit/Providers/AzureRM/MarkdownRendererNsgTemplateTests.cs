@@ -27,13 +27,14 @@ public class MarkdownRendererNsgTemplateTests
             providerRegistry: providerRegistry);
     }
 
-    private static ReportModelBuilder CreateBuilder()
+    private static ReportModelBuilder CreateBuilder(bool showUnchangedValues = false)
     {
         var providerRegistry = new ProviderRegistry();
         providerRegistry.RegisterProvider(new AzureRMModule(
             largeValueFormat: LargeValueFormat.InlineDiff,
             principalMapper: new NullPrincipalMapper()));
         return new ReportModelBuilder(
+            options: new ReportModelBuilderOptions(ShowUnchangedValues: showUnchangedValues),
             services: new ReportModelBuilderServices(ProviderRegistry: providerRegistry));
     }
 
@@ -45,11 +46,11 @@ public class MarkdownRendererNsgTemplateTests
         return Regex.Replace(withoutBackticks, "\\s+", " ", RegexOptions.Singleline, TimeSpan.FromSeconds(2)).Trim();
     }
 
-    private string RenderNsgPlan()
+    private string RenderNsgPlan(bool showUnchangedValues = true)
     {
         var json = File.ReadAllText("TestData/nsg-rule-changes.json");
         var plan = _parser.Parse(json);
-        var model = CreateBuilder().Build(plan);
+        var model = CreateBuilder(showUnchangedValues).Build(plan);
 
         return _renderer.Render(model);
     }
@@ -90,6 +91,20 @@ public class MarkdownRendererNsgTemplateTests
         normalized.Should().Contain("10.0.2.0/24");
         normalized.Should().Contain($"| {ActionIcons.Delete} | 🆔 allow-ssh | 120");
         normalized.Should().Contain($"| {ActionIcons.Unchanged} | 🆔 allow-dns | 130 | ⬆️ Outbound | ✅ Allow | 🔗 UDP | ✳️ | ✳️ | 🌐 168.63.129.16 | 🔌 53 | Azure DNS |");
+    }
+
+    /// <summary>
+    /// Verifies the inline-rules update path hides unchanged rules and counts them by default (TC-80, TC-82).
+    /// </summary>
+    [Test]
+    public void Render_NsgUpdateDefault_OmitsUnchangedRulesAndWritesNote()
+    {
+        var normalized = Normalize(RenderNsgPlan(showUnchangedValues: false));
+
+        normalized.Should().Contain($"| {ActionIcons.Add} | 🆔 allow-https | 100");
+        normalized.Should().NotContain($"| {ActionIcons.Unchanged} |");
+        normalized.Should().NotContain("allow-dns");
+        normalized.Should().Contain("_2 unchanged security rules hidden._");
     }
 
     [Test]

@@ -114,11 +114,11 @@ assumption. Keep groups that end up empty. Keep remaining rows in their original
 Change it to `Rows.Count + HiddenUnchangedCount == 2`, so the `_No attribute changes._`
 behaviour is unchanged after filtering.
 **Acceptance Criteria:**
-- [ ] Security-rules group with `Rows.Count == 1` and `HiddenUnchangedCount == 1` is treated
+- [x] Security-rules group with `Rows.Count == 1` and `HiddenUnchangedCount == 1` is treated
       as the two-row scenario (TC-27)
-- [ ] `Rows.Count == 1` with `HiddenUnchangedCount == 0` is not treated as the two-row
+- [x] `Rows.Count == 1` with `HiddenUnchangedCount == 0` is not treated as the two-row
       scenario (TC-27)
-- [ ] The existing no-op NSG snapshot still renders `_No attribute changes._` unchanged
+- [x] The existing no-op NSG snapshot still renders `_No attribute changes._` unchanged
       (TC-27)
 **Dependencies:** Task 4
 
@@ -132,24 +132,24 @@ directly below the table. When no rows remain: no heading, table or note; if
 `HasMixedSources`, write only the warning. Replace the warning copy in this renderer with
 the helper call. Do not read `IRenderContext.ShowUnchangedValues`.
 **Acceptance Criteria:**
-- [ ] Rows hidden: output order is heading, table, blank line, note (TC-10)
-- [ ] The note is one italic line with no other text between table and note (TC-11)
-- [ ] Note uses the group nouns, not nouns derived from the label (TC-12)
-- [ ] One hidden uses the singular noun; eight hidden and two hidden use the plural (TC-13,
+- [x] Rows hidden: output order is heading, table, blank line, note (TC-10)
+- [x] The note is one italic line with no other text between table and note (TC-11)
+- [x] Note uses the group nouns, not nouns derived from the label (TC-12)
+- [x] One hidden uses the singular noun; eight hidden and two hidden use the plural (TC-13,
       TC-14)
-- [ ] Nothing hidden writes no note (TC-16)
-- [ ] Group with `showUnchanged` model (count 0, ⏺️ rows) renders all rows and no note
+- [x] Nothing hidden writes no note (TC-16)
+- [x] Group with `showUnchanged` model (count 0, ⏺️ rows) renders all rows and no note
       (TC-17)
-- [ ] All rows hidden, not mixed: output contains no child heading, table header or note
+- [x] All rows hidden, not mixed: output contains no child heading, table header or note
       (TC-20, TC-21)
-- [ ] Group of only ⏺️ rows with count 0 renders heading and every row (TC-22)
-- [ ] All rows hidden and mixed: output is exactly the warning paragraph (TC-23)
-- [ ] Rows remain and mixed: order is heading, warning, table, note (TC-24)
-- [ ] Mixed with nothing hidden: output equals the pre-feature output for that input (TC-25)
-- [ ] Exactly one remaining changed row plus a note renders (edge case in test plan)
-- [ ] VNet subnets, DNS records, AD members and DevOps administrators groups with all rows
+- [x] Group of only ⏺️ rows with count 0 renders heading and every row (TC-22)
+- [x] All rows hidden and mixed: output is exactly the warning paragraph (TC-23)
+- [x] Rows remain and mixed: order is heading, warning, table, note (TC-24)
+- [x] Mixed with nothing hidden: output equals the pre-feature output for that input (TC-25)
+- [x] Exactly one remaining changed row plus a note renders (edge case in test plan)
+- [x] VNet subnets, DNS records, AD members and DevOps administrators groups with all rows
       hidden omit the section (TC-94)
-- [ ] Table separator rows are unchanged for this renderer
+- [x] Table separator rows are unchanged for this renderer
 **Dependencies:** Task 3, Task 4
 
 ### Task 7: Render merged NSG security-rule tables with the hidden-count note
@@ -160,14 +160,14 @@ security-rule nouns from the registration. Replace its copy of the mixed-sources
 with the helper. Keep this renderer's own separator row format; the two renderers' separators
 differ and must not be unified.
 **Acceptance Criteria:**
-- [ ] Separate rules with ➕ and ⏺️ rows show only the changed rows and
+- [x] Separate rules with ➕ and ⏺️ rows show only the changed rows and
       `_N unchanged security rules hidden._` (TC-95)
-- [ ] One hidden uses `security rule` singular (TC-95)
-- [ ] All separate rules hidden: the rules section is omitted (TC-96)
-- [ ] All rules hidden and mixed sources: only the warning (TC-97)
-- [ ] Model with `showUnchanged` (count 0) renders all rows, no note, separator row
+- [x] One hidden uses `security rule` singular (TC-95)
+- [x] All separate rules hidden: the rules section is omitted (TC-96)
+- [x] All rules hidden and mixed sources: only the warning (TC-97)
+- [x] Model with `showUnchanged` (count 0) renders all rows, no note, separator row
       unchanged (TC-98)
-- [ ] No-op parent with a separate rule change still renders the changed rule
+- [x] No-op parent with a separate rule change still renders the changed rule
       (issue 120 regression, TC-99)
 **Dependencies:** Task 3, Task 4
 
@@ -182,19 +182,19 @@ remain, call `base.Render` so the parent's attribute changes still render and no
 details block appears. Keep the existing `base.Render` fallback for missing rule data.
 Row order and formatting of remaining rows must not change.
 **Acceptance Criteria:**
-- [ ] Inline rules update with the default flag omits ⏺️ rules and writes the note
+- [x] Inline rules update with the default flag omits ⏺️ rules and writes the note
       (TC-80)
-- [ ] With `--show-unchanged-values`, output is identical to pre-feature output, including
+- [x] With `--show-unchanged-values`, output is identical to pre-feature output, including
       ⏺️ row order and formatting (TC-81, golden from Task 1)
-- [ ] One unchanged rule gives `_1 unchanged security rule hidden._`; several give the plural
+- [x] One unchanged rule gives `_1 unchanged security rule hidden._`; several give the plural
       (TC-82)
-- [ ] Nothing unchanged writes no note (TC-83)
-- [ ] All inline rules unchanged, including a variant where only tags change: output has the
+- [x] Nothing unchanged writes no note (TC-83)
+- [x] All inline rules unchanged, including a variant where only tags change: output has the
       attribute table, no rules heading, table or note, and no empty details block (TC-84)
-- [ ] Create and delete paths are unaffected by the filter (TC-85)
-- [ ] Remaining rule rows keep their original order (TC-86)
-- [ ] No rule data falls back to the default renderer as today (TC-87)
-- [ ] Nouns used by this renderer equal the nouns registered for `Security Rules` in
+- [x] Create and delete paths are unaffected by the filter (TC-85)
+- [x] Remaining rule rows keep their original order (TC-86)
+- [x] No rule data falls back to the default renderer as today (TC-87)
+- [x] Nouns used by this renderer equal the nouns registered for `Security Rules` in
       `AzureRMModule` (TC-88)
 **Dependencies:** Task 2, Task 3
 
@@ -206,10 +206,10 @@ Change the help line for `--show-unchanged-values` in
 in tables.") so it says the option also includes unchanged child rows. Update the existing
 help tests and any help snapshot that contains the line. No new option is added.
 **Acceptance Criteria:**
-- [ ] Help line for `--show-unchanged-values` mentions attribute values and unchanged child
+- [x] Help line for `--show-unchanged-values` mentions attribute values and unchanged child
       rows (TC-71)
-- [ ] No other help line changes (TC-71)
-- [ ] Existing help tests pass after the expected text is updated
+- [x] No other help line changes (TC-71)
+- [x] Existing help tests pass after the expected text is updated
 **Dependencies:** None
 
 ### Task 10: Update user documentation for hidden child rows
@@ -260,23 +260,23 @@ and inline `route` children with 2 unchanged. Run the full pipeline (`MarkdownRe
 with and without the option. Cover the create, delete, replace and no-op-with-tag-only
 cases. Also cover the single-resource path, which hard-codes the flag to false.
 **Acceptance Criteria:**
-- [ ] Default output for the separate-children plan contains the three changed rows and
+- [x] Default output for the separate-children plan contains the three changed rows and
       `_1 unchanged route hidden._`, and not the unchanged route name (TC-30)
-- [ ] Option-on output equals the golden baseline from Task 1 and has the ⏺️ row and no note
+- [x] Option-on output equals the golden baseline from Task 1 and has the ⏺️ row and no note
       (TC-31)
-- [ ] Inline plus separate mixed table: warning, changed rows, and a note whose count includes
+- [x] Inline plus separate mixed table: warning, changed rows, and a note whose count includes
       unchanged rows of both sources (TC-32)
-- [ ] Remaining rows are in the same order as the option-on table with ⏺️ rows removed
+- [x] Remaining rows are in the same order as the option-on table with ⏺️ rows removed
       (TC-40)
-- [ ] Note directly follows the last table row after one blank line (TC-41)
-- [ ] Route table with only tags changing and all routes unchanged: no `Routes` heading,
+- [x] Note directly follows the last table row after one blank line (TC-41)
+- [x] Route table with only tags changing and all routes unchanged: no `Routes` heading,
       table or note; option on gives the full ⏺️ table (TC-46, TC-47)
-- [ ] Create and delete route tables render identical to pre-feature output (TC-48, TC-49)
-- [ ] Parent summary line child counts are identical in both modes and to pre-feature text
+- [x] Create and delete route tables render identical to pre-feature output (TC-48, TC-49)
+- [x] Parent summary line child counts are identical in both modes and to pre-feature text
       (TC-50)
-- [ ] Replace parent hides unchanged routes (AC 1, Decision 5)
-- [ ] Mixed-sources table with all children unchanged renders the warning on its own (TC-52)
-- [ ] `MarkdownRenderer.RenderResourceChange` renders hidden rows and the note consistently
+- [x] Replace parent hides unchanged routes (AC 1, Decision 5)
+- [x] Mixed-sources table with all children unchanged renders the warning on its own (TC-52)
+- [x] `MarkdownRenderer.RenderResourceChange` renders hidden rows and the note consistently
       with the model and does not read the context flag (TC-56)
 **Dependencies:** Task 1, Task 4, Task 6
 
@@ -288,14 +288,14 @@ record types) through the full pipeline, with and without the option. Use the ex
 fixtures `azurerm-vnet-inline-subnets-plan.json` and `azurerm-dns-zone-records-plan.json`
 where they have an unchanged child next to changed ones; add a fixture where they do not.
 **Acceptance Criteria:**
-- [ ] Subnets default output shows only changed subnets and the note names `subnets` (TC-33)
-- [ ] One unchanged subnet gives `_1 unchanged subnet hidden._`; two or more give the plural
+- [x] Subnets default output shows only changed subnets and the note names `subnets` (TC-33)
+- [x] One unchanged subnet gives `_1 unchanged subnet hidden._`; two or more give the plural
       (TC-42, TC-43)
-- [ ] DNS records default output shows only changed records and the note names `DNS records`
+- [x] DNS records default output shows only changed records and the note names `DNS records`
       with correct singular/plural (TC-36, TC-42, TC-43)
-- [ ] No note when nothing is hidden for either pattern (TC-44)
-- [ ] No note with the option on for either pattern; full table rendered (TC-45)
-- [ ] Option-on output equals the golden baseline from Task 1 (TC-61)
+- [x] No note when nothing is hidden for either pattern (TC-44)
+- [x] No note with the option on for either pattern; full table rendered (TC-45)
+- [x] Option-on output equals the golden baseline from Task 1 (TC-61)
 **Dependencies:** Task 1, Task 6
 
 ### Task 14: NSG integration tests (inline rules, separate rules)
@@ -307,15 +307,15 @@ and for inline rules where all rules are unchanged and only tags change (fallbac
 existing fixtures `azurerm-nsg-inline-rules-plan.json`, `nsg-with-no-op-rules.json` and
 `nsg-with-separate-rule-updates.json` where they fit; add fixtures where they do not.
 **Acceptance Criteria:**
-- [ ] Inline rules: 1 changed and 2 unchanged gives the changed rule only and
+- [x] Inline rules: 1 changed and 2 unchanged gives the changed rule only and
       `_2 unchanged security rules hidden._` (TC-35)
-- [ ] Separate rules with 1 create and 1 unchanged gives the created rule and
+- [x] Separate rules with 1 create and 1 unchanged gives the created rule and
       `_1 unchanged security rule hidden._` (TC-34)
-- [ ] Note names `security rules` with singular and plural correct (TC-42, TC-43)
-- [ ] Inline rules all unchanged with a tag change: attribute table only, no empty `<details>`
+- [x] Note names `security rules` with singular and plural correct (TC-42, TC-43)
+- [x] Inline rules all unchanged with a tag change: attribute table only, no empty `<details>`
       block, no rules section (TC-84 at integration level)
-- [ ] With the option on, all rules render in the existing format, no note (TC-45, TC-81)
-- [ ] Option-on output equals the golden baseline from Task 1 (TC-61)
+- [x] With the option on, all rules render in the existing format, no note (TC-45, TC-81)
+- [x] Option-on output equals the golden baseline from Task 1 (TC-61)
 **Dependencies:** Task 1, Task 7, Task 8
 
 ### Task 15: Azure AD group and Azure DevOps integration tests
@@ -329,16 +329,16 @@ an administrators fixture if none has an unchanged administrator next to changed
 Verify that the Azure AD member-type summary counts still include unchanged members in both
 modes.
 **Acceptance Criteria:**
-- [ ] Azure AD members default output shows only changed members with `_N unchanged members
+- [x] Azure AD members default output shows only changed members with `_N unchanged members
       hidden._` (TC-37, TC-42, TC-43)
-- [ ] DevOps team administrators show only the changed administrator and the note names
+- [x] DevOps team administrators show only the changed administrator and the note names
       `administrators` with singular/plural correct (TC-38, TC-42, TC-43)
-- [ ] DevOps group members render with only changed rows and the note (TC-39)
-- [ ] Azure AD summary member-type counts include unchanged members in default and option-on
+- [x] DevOps group members render with only changed rows and the note (TC-39)
+- [x] Azure AD summary member-type counts include unchanged members in default and option-on
       modes, equal to the pre-feature summary (TC-51)
-- [ ] No note when nothing is hidden and no note with the option on, for each pattern
+- [x] No note when nothing is hidden and no note with the option on, for each pattern
       (TC-44, TC-45)
-- [ ] Option-on output equals the golden baseline from Task 1 for each fixture (TC-61)
+- [x] Option-on output equals the golden baseline from Task 1 for each fixture (TC-61)
 **Dependencies:** Task 1, Task 2, Task 6
 
 ### Task 16: Edge-case and code-analysis integration tests
@@ -351,14 +351,14 @@ combination of `--show-unchanged-values` with other options. Add fixtures only w
 existing one covers the case (for example `azurerm-vnet-known-after-apply-plan.json` and
 `azuread-group-members-known-after-apply-plan.json`).
 **Acceptance Criteria:**
-- [ ] Finding on an unchanged merged child still appears in the parent section when the row
+- [x] Finding on an unchanged merged child still appears in the parent section when the row
       is hidden (TC-53)
-- [ ] `known after apply` members and subnets are not ⏺️ and stay visible (TC-102)
-- [ ] A case-only change under `--ignore-azure-id-case-changes` is hidden like other ⏺️ rows
+- [x] `known after apply` members and subnets are not ⏺️ and stay visible (TC-102)
+- [x] A case-only change under `--ignore-azure-id-case-changes` is hidden like other ⏺️ rows
       (TC-104)
-- [ ] Azure AD no-op parent with all members hidden keeps the `_No attribute changes._`
+- [x] Azure AD no-op parent with all members hidden keeps the `_No attribute changes._`
       suppression unchanged (TC-105)
-- [ ] Child behaviour depends only on `--show-unchanged-values`, not on
+- [x] Child behaviour depends only on `--show-unchanged-values`, not on
       `--hide-unchanged-outputs` or `--large-value-format` (TC-106)
 **Dependencies:** Task 4, Task 6, Task 7, Task 8, Task 15
 
@@ -371,11 +371,11 @@ GitHub and Bitbucket render targets, in every details display mode. Run one scen
 (TC-30) through the full target and mode matrix and assert the same child rows and note in
 each. The rendering check in a real PR UI is UAT, not part of this task.
 **Acceptance Criteria:**
-- [ ] Each default scenario from TC-30 to TC-39 passes markdown lint and validation for
+- [x] Each default scenario from TC-30 to TC-39 passes markdown lint and validation for
       Azure DevOps, GitHub and Bitbucket (TC-54)
-- [ ] The TC-30 scenario yields the same child rows and note for every render target and
+- [x] The TC-30 scenario yields the same child rows and note for every render target and
       details display mode (TC-55)
-- [ ] Child names with `|`, backticks, `<` or `&` do not break the table (test plan edge case,
+- [x] Child names with `|`, backticks, `<` or `&` do not break the table (test plan edge case,
       TC-54)
 **Dependencies:** Task 12, Task 13, Task 14, Task 15
 
@@ -391,16 +391,16 @@ the work protocol. `firewall-rules.md` must not change. Confirm that option-on s
 non-parent-child snapshots are byte-identical to Task 1 baselines. Use
 `scripts/update-test-snapshots.sh` only for the four intended snapshots.
 **Acceptance Criteria:**
-- [ ] Every existing snapshot test with `--show-unchanged-values` passes without baseline
+- [x] Every existing snapshot test with `--show-unchanged-values` passes without baseline
       change (TC-60)
-- [ ] The four intended snapshots differ only by removed ⏺️ child rows, added hidden-count
+- [x] The four intended snapshots differ only by removed ⏺️ child rows, added hidden-count
       notes and removed child sections; the reviewed diff summary is in the work protocol
       (TC-62)
-- [ ] `firewall-rules.md` is unchanged (TC-62)
-- [ ] Build definition and variable group tests, and firewall rule collection template tests,
+- [x] `firewall-rules.md` is unchanged (TC-62)
+- [x] Build definition and variable group tests, and firewall rule collection template tests,
       pass unchanged and still contain their ⏺️ rows with the option off (TC-63)
-- [ ] Plans without parent-child resources render byte-identical to Task 1 baselines (TC-64)
-- [ ] Option-on output for every TC-30 to TC-39 fixture equals its Task 1 baseline (TC-61)
+- [x] Plans without parent-child resources render byte-identical to Task 1 baselines (TC-64)
+- [x] Option-on output for every TC-30 to TC-39 fixture equals its Task 1 baseline (TC-61)
 **Dependencies:** Task 1, Task 6, Task 7, Task 8
 
 ### Task 19: Prepare UAT input files (Developer builds, does not run UAT)
@@ -413,15 +413,15 @@ listed in that plan, with fictitious names only), the default rendering `uat-pla
 `generate-demo-artifacts` skill. The Developer does not create UAT PRs, post comments or
 judge the rendering; the Maintainer runs UAT as the UAT plan states.
 **Acceptance Criteria:**
-- [ ] `uat-plan.json` contains one scenario per row of the UAT plan table, including the
+- [x] `uat-plan.json` contains one scenario per row of the UAT plan table, including the
       edge cases listed there, and includes at least one scenario for each child label
       (Routes, Subnets, Security Rules, DNS Records, Members, Administrators)
-- [ ] `uat-plan.json` contains no real tenant, person or address data
-- [ ] `uat-plan.md` and `uat-plan-show-unchanged.md` are generated from `uat-plan.json`
+- [x] `uat-plan.json` contains no real tenant, person or address data
+- [x] `uat-plan.md` and `uat-plan-show-unchanged.md` are generated from `uat-plan.json`
       through the normal pipeline
-- [ ] Regenerated comprehensive demo artifacts differ from the previous ones only as Task 18
+- [x] Regenerated comprehensive demo artifacts differ from the previous ones only as Task 18
       lists
-- [ ] The unchanged-code-analysis scenario is either included or explicitly omitted with a
+- [x] The unchanged-code-analysis scenario is either included or explicitly omitted with a
       note in the work protocol
 **Dependencies:** Task 18
 

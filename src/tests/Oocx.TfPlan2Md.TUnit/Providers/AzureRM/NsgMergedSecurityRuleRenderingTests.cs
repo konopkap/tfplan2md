@@ -88,7 +88,8 @@ public class NsgMergedSecurityRuleRenderingTests
         var parent = model.Changes.Single(change => change.Type == NetworkSecurityGroupType);
         var securityRules = parent.ChildResourceGroups.Should().ContainSingle(group => group.Label == "Security Rules").Subject;
 
-        securityRules.Rows.Should().HaveCount(3, "the merged group should include unchanged inline rows and the separate child rule");
+        securityRules.Rows.Should().HaveCount(1, "only the separate child rule is a change; the two unchanged inline rules are hidden");
+        securityRules.HiddenUnchangedCount.Should().Be(2);
         securityRules.HasExternalResources.Should().BeTrue();
         parent.SummaryHtml.Should().Contain($"{ActionIcons.Add}\u00A01 security rules");
     }
@@ -155,14 +156,31 @@ public class NsgMergedSecurityRuleRenderingTests
     [Test]
     public void Render_MixedInlineAndSeparateRules_ShowsAllRows()
     {
-        var markdown = Render(BuildMixedInlineAndSeparateRulePlan());
+        var markdown = Render(BuildMixedInlineAndSeparateRulePlan(), showUnchangedValues: true);
         var normalized = Normalize(markdown);
 
         normalized.Should().Contain("AllowHttpsInbound");
         normalized.Should().Contain("AllowDnsOutbound");
         normalized.Should().Contain("MyRuleName");
         normalized.Should().Contain("This resource has children managed both inline and as separate resources");
+        normalized.Should().NotContain("unchanged security rule");
         markdown.Should().NotContain("azurerm_network_security_rule <b><code>mixed_rule_create</code></b>");
+    }
+
+    /// <summary>
+    /// Verifies the default output hides unchanged rules, counts them and keeps the mixed-sources warning (TC-95).
+    /// </summary>
+    [Test]
+    public void Render_MixedInlineAndSeparateRulesDefault_ShowsChangedRowsAndNote()
+    {
+        var markdown = Render(BuildMixedInlineAndSeparateRulePlan());
+        var normalized = Normalize(markdown);
+
+        normalized.Should().Contain("AllowDnsOutbound");
+        normalized.Should().Contain("MyRuleName");
+        normalized.Should().NotContain("AllowHttpsInbound");
+        normalized.Should().Contain("This resource has children managed both inline and as separate resources");
+        normalized.Should().Contain("_1 unchanged security rule hidden._");
     }
 
     /// <summary>
@@ -170,10 +188,11 @@ public class NsgMergedSecurityRuleRenderingTests
     /// </summary>
     /// <param name="plan">The plan to render.</param>
     /// <returns>The rendered markdown output.</returns>
-    private static string Render(TerraformPlan plan)
+    /// <param name="showUnchangedValues">Whether unchanged rules are shown.</param>
+    private static string Render(TerraformPlan plan, bool showUnchangedValues = false)
     {
         var renderer = new MarkdownRenderer(providerRegistry: CreateProviderRegistry());
-        return renderer.Render(BuildModel(plan));
+        return renderer.Render(BuildModel(plan, showUnchangedValues));
     }
 
     /// <summary>
@@ -181,10 +200,12 @@ public class NsgMergedSecurityRuleRenderingTests
     /// </summary>
     /// <param name="plan">The plan to convert.</param>
     /// <returns>The built report model.</returns>
-    private static ReportModel BuildModel(TerraformPlan plan)
+    /// <param name="showUnchangedValues">Whether unchanged rules are shown.</param>
+    private static ReportModel BuildModel(TerraformPlan plan, bool showUnchangedValues = false)
     {
         var providerRegistry = CreateProviderRegistry();
         var builder = new ReportModelBuilder(
+            options: new ReportModelBuilderOptions(ShowUnchangedValues: showUnchangedValues),
             services: new ReportModelBuilderServices(ProviderRegistry: providerRegistry));
         return builder.Build(plan);
     }
