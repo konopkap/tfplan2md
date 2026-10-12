@@ -241,7 +241,7 @@ terraform show -json plan.tfplan | docker run -i oocx/tfplan2md --template summa
 | `--code-analysis-results <pattern>` | SARIF file pattern for static analysis findings (can be specified multiple times) |
 | `--code-analysis-minimum-level <level>` | Minimum severity to display (critical, high, medium, low, informational) |
 | `--fail-on-static-code-analysis-errors <level>` | Exit with code 10 when findings at or above this level exist |
-| `--show-unchanged-values` | Include unchanged attribute values in tables (hidden by default) |
+| `--show-unchanged-values` | Include unchanged attribute values and unchanged child rows in tables (hidden by default) |
 | `--summary-name-attributes <path1,path2,...>` | Replace the generic resource summary identity candidates, in the supplied order; paths may be nested (for example, `body.displayName`) |
 | `--hide-unchanged-outputs` | Omit outputs whose Terraform action is no-op from root and module output sections |
 | `--ignore-azure-id-case-changes` | Suppress attribute change rows where before/after values are Azure resource IDs that differ only in casing (see [below](#case-insensitive-azure-resource-id-filter)) |

@@ -848,6 +848,7 @@ Attribute tables in the default template now vary by the resource change action 
 - Attributes where the before and after values are identical are **hidden by default** to reduce noise and help users quickly identify actual changes
 - Use `--show-unchanged-values` flag to display all attributes including unchanged ones
 - This filtering applies to all attribute change tables regardless of which template is used
+- The same flag controls unchanged child rows in parent-child tables (for example subnets, routes, NSG rules and group members). See [Parent-Child Resource Grouping](#parent-child-resource-grouping-inline-child-tables)
 
 Attributes where both the before and after values are null (and the attribute is not computed) are omitted from the tables to avoid meaningless rows. Sensitive attributes are masked unless `--show-sensitive` is used. Computed attributes (marked `after_unknown` in the plan) are shown with a `(known after apply)` placeholder — see [Known-After-Apply Rendering](#known-after-apply-rendering) below.
 
@@ -1053,7 +1054,7 @@ Simple single-command interface with flags:
 | `--render-target <github\|azuredevops\|bitbucket>` | Target platform for rendering: `github` (simple diff), `azuredevops` (inline diff, default), or `bitbucket` (markdown-only output for Bitbucket comments) |
 | `--principal-mapping <file>` | Map Azure principal IDs to names using a JSON file |
 | `--drift <all\|relevant\|none>` | Control drift display: `all` (default), `relevant` (planned-change resources only), or `none` |
-| `--show-unchanged-values` | Include unchanged attribute values in tables (hidden by default) |
+| `--show-unchanged-values` | Include unchanged attribute values and unchanged child rows in tables (hidden by default) |
 | `--show-sensitive` | Show sensitive values unmasked |
 | `--hide-metadata` | Suppress tfplan2md version and generation timestamp from report header |
 | `--debug` | Append diagnostic information to the report for troubleshooting |
@@ -1788,7 +1789,7 @@ tfplan2md --debug --principal-mapping principals.json plan.json
 ## Parent-Child Resource Grouping (Inline Child Tables)
 
 **Status:** ✅ Implemented  \
-**Related specification:** [docs/features/068-parent-child-resource-grouping/specification.md](features/068-parent-child-resource-grouping/specification.md)
+**Related specification:** [docs/features/046-parent-child-resource-grouping/specification.md](features/046-parent-child-resource-grouping/specification.md)
 
 Some Terraform providers model related data in a parent-child pattern: children can be managed either inline on the parent resource (via an attribute like `members`) or as separate standalone resources (like `azuread_group_member`).
 
@@ -1815,6 +1816,11 @@ tfplan2md detects these configured parent-child relationships and renders the ch
 
 - **Create/Delete**: Child tables omit the “Change” column (the parent action already implies the change).
 - **Update/Replace**: Child tables include a “Change” column using the same indicators as resource changes (➕, 🔄, ❌, ⏺️).
+- **Unchanged rows (default)**: Rows marked ⏺️ (unchanged) are hidden. Only the added, modified and removed rows are shown. When rows are hidden, a one-line italic note directly below the table gives the count and the child noun of that pattern, for example `_1 unchanged route hidden._` or `_8 unchanged subnets hidden._`. The singular noun is used only for a count of one. Nothing is hidden, and no note is written, when no row is unchanged. The note counts unchanged rows from both sources in a mixed table.
+- **All children unchanged (default)**: The child heading, table and note are omitted, so the parent shows only its attribute changes. If the parent also has mixed inline and separate children, the mixed-sources warning is still shown on its own.
+- **Create and delete**: All child rows are shown, including any ⏺️ rows, and no note is written. The parent action already implies the change.
+- **`--show-unchanged-values`**: All child rows are shown, including ⏺️ rows, in the full table format, and no note is written.
+- **Summary counts**: The child counts in the parent summary line are the same with and without the flag, and they include unchanged children.
 - **Terraform Resource column**:
   - Inline children show the inline attribute name (for example: `members attribute`).
   - Separate child resources show their original Terraform address (for example: `azuredevops_group_membership.release_managers_membership_alice`).
@@ -2349,7 +2355,7 @@ For `azurerm_network_security_group`, security rules are rendered in a single ta
 - **Added rules**: ➕ with the new values.
 - **Removed rules**: ❌ with the old values.
 - **Modified rules**: 🔄 with before/after values in the same cell using `-` and `+` prefixes separated by `<br>`.
-- **Unchanged rules**: ⏺️ for completeness.
+- **Unchanged rules**: Hidden by default, for both inline `security_rule` blocks and separate `azurerm_network_security_rule` resources. When rules are hidden, a note below the table gives the count, for example `_2 unchanged security rules hidden._` (singular `security rule` for a count of one). When every rule is unchanged, the security rules section is omitted and the NSG's attribute changes are still shown. Use `--show-unchanged-values` to show the unchanged rules with ⏺️ and without the note.
 
 Example of a modified NSG rule with a port change and description update:
 
