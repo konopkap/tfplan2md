@@ -257,9 +257,19 @@ without `ShowUnchangedValues`.
 - **TC-55** Render target and details-mode matrix: one scenario (TC-30) rendered for
   every render target and every details display mode contains the same child rows and
   note.
-- **TC-56** `MarkdownRenderer.RenderResourceChange` (single resource path, flag hard-coded
-  to false) renders hidden rows and the note consistently with the model; it must not
-  throw and must not read the context flag.
+- **TC-56** `MarkdownRenderer.RenderResourceChange` (single resource path; it builds its
+  render context with `showUnchangedValues: false` hard-coded) for a model built with
+  `--show-unchanged-values`. Group-based renderers render the model's rows and never read
+  the context flag, so the two paths differ, and both are pinned in
+  `HiddenChildRowsEdgeCaseTests.cs`:
+  - `RenderResourceChange_MergedNsgFromShowUnchangedModel_RendersModelRows`: merged
+    (separate) NSG rules render the model's rows, ⏺️ rows kept, no hidden-count note.
+  - `RenderResourceChange_InlineNsgFromShowUnchangedModel_HidesUnchangedRules`: inline
+    NSG rules filter from the context flag, which is false here, so unchanged rules are
+    hidden with the note (`_2 unchanged security rules hidden._`).
+
+  The inline case is an accepted exception: `RenderResourceChange` is not used by the CLI
+  pipeline, so no production output is affected.
 
 ### Snapshots and regressions
 

@@ -86,7 +86,9 @@
       "q": "TC-56 says MarkdownRenderer.RenderResourceChange renders hidden rows consistently with the model and does not read the context flag, but the inline NSG path filters from the context flag, which that method hard-codes to false. Should TC-56 be amended?",
       "assumed": "Yes. The Quality Engineer amends TC-56 in test-plan.md to name the inline-NSG exception. RenderResourceChange is test-only, so no production change; tests RenderResourceChange_MergedNsgFromShowUnchangedModel_RendersModelRows and RenderResourceChange_InlineNsgFromShowUnchangedModel_HidesUnchangedRules pin the actual behaviour.",
       "raised_by": "developer",
-      "raised_at": "2026-10-12"
+      "raised_at": "2026-10-12",
+      "resolved": true,
+      "answer": "TC-56 amended in test-plan.md to name the inline-NSG exception; the two named tests pin the behaviour."
     }
   ],
   "arch_contested": false
