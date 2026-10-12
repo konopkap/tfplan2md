@@ -339,7 +339,7 @@ tfplan2md/
 - **Pure DI:** `CompositionRoot` wires all services without a DI container (ADR-006).
 - **Code Analysis Integration:** SARIF-based static analysis results integrated into markdown reports.
 - **Parent-Child Resource Merging:** Resources can be grouped hierarchically (e.g., NSG rules under NSG) via `ParentChildRelationshipRegistry`.
-- **Unchanged Child Row Filtering:** `DisplayFilteringStage` removes rows marked `ChildResourceRow.IsUnchanged` (no-op separate children and inline children with identical values) from `ChildResourceGroups`; other ⏺️ rows, such as `forget` children, stay and records the removed count in `ChildResourceGroup.HiddenUnchangedCount`, unless `--show-unchanged-values` is set. Renderers draw the rows they receive and write the hidden-count note. The exception is inline NSG rules, which are filtered in `NsgRenderer` because they are rendered from its own view model and not from the child groups.
+- **Unchanged Child Row Filtering:** `DisplayFilteringStage` removes rows marked `ChildResourceRow.IsUnchanged` (no-op separate children and inline children with identical values) from `ChildResourceGroups` and records the removed count in `ChildResourceGroup.HiddenUnchangedCount`, unless `--show-unchanged-values` is set. Other ⏺️ rows, such as `forget` children, stay visible. Renderers draw the rows they receive and write the hidden-count note. The exception is inline NSG rules, which are filtered in `NsgRenderer` because they are rendered from its own view model and not from the child groups.
 - **Registry Pattern:** Generic `PatternMatchingRegistry<T>` enables specificity-based resolution for value formatters and icon providers.
 
 ---
