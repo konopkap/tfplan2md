@@ -1816,11 +1816,11 @@ tfplan2md detects these configured parent-child relationships and renders the ch
 
 - **Create/Delete**: Child tables omit the “Change” column (the parent action already implies the change).
 - **Update/Replace**: Child tables include a “Change” column using the same indicators as resource changes (➕, 🔄, ❌, ⏺️).
-- **Unchanged rows (default)**: Rows marked ⏺️ (unchanged) are hidden. Only the added, modified and removed rows are shown. When rows are hidden, a one-line italic note directly below the table gives the count and the child noun of that pattern, for example `_1 unchanged route hidden._` or `_8 unchanged subnets hidden._`. The singular noun is used only for a count of one. Nothing is hidden, and no note is written, when no row is unchanged. The note counts unchanged rows from both sources in a mixed table.
+- **Unchanged rows (default)**: A child is hidden only when it is truly unchanged: a separate child whose action is no-op, or an inline child whose values are identical before and after. Other rows stay visible with their indicator, including a child with another action that also shows ⏺️, such as a `forget` (Terraform `removed` block) child. When rows are hidden, a one-line italic note directly below the table gives the count and the child noun of that pattern, for example `_1 unchanged route hidden._` or `_8 unchanged subnets hidden._`. The singular noun is used only for a count of one. Nothing is hidden, and no note is written, when no child is truly unchanged. The note counts hidden unchanged rows from both sources in a mixed table.
 - **All children unchanged (default)**: The child heading, table and note are omitted, so the parent shows only its attribute changes. If the parent also has mixed inline and separate children, the mixed-sources warning is still shown on its own.
 - **Create and delete**: All child rows are shown, including any ⏺️ rows, and no note is written. The parent action already implies the change.
 - **`--show-unchanged-values`**: All child rows are shown, including ⏺️ rows, in the full table format, and no note is written.
-- **Summary counts**: The child counts in the parent summary line are the same with and without the flag, and they include unchanged children.
+- **Summary counts**: The ➕, 🔄 and ❌ child counts in the parent summary line are the same with and without the flag. Unchanged (⏺️) children are not counted there. The Azure AD group summary member-type counts (👤 👥 💻) count all members, including unchanged ones, in both modes.
 - **Terraform Resource column**:
   - Inline children show the inline attribute name (for example: `members attribute`).
   - Separate child resources show their original Terraform address (for example: `azuredevops_group_membership.release_managers_membership_alice`).
@@ -2355,7 +2355,7 @@ For `azurerm_network_security_group`, security rules are rendered in a single ta
 - **Added rules**: ➕ with the new values.
 - **Removed rules**: ❌ with the old values.
 - **Modified rules**: 🔄 with before/after values in the same cell using `-` and `+` prefixes separated by `<br>`.
-- **Unchanged rules**: Hidden by default, for both inline `security_rule` blocks and separate `azurerm_network_security_rule` resources. When rules are hidden, a note below the table gives the count, for example `_2 unchanged security rules hidden._` (singular `security rule` for a count of one). When every rule is unchanged, the security rules section is omitted and the NSG's attribute changes are still shown. Use `--show-unchanged-values` to show the unchanged rules with ⏺️ and without the note.
+- **Unchanged rules**: Hidden by default, for both inline `security_rule` blocks and separate `azurerm_network_security_rule` resources whose action is no-op. A separate rule with another action that shows ⏺️, such as `forget`, stays visible. When rules are hidden, a note below the table gives the count, for example `_2 unchanged security rules hidden._` (singular `security rule` for a count of one). When every rule is unchanged, the security rules section is omitted and the NSG's attribute changes are still shown. Use `--show-unchanged-values` to show the unchanged rules with ⏺️ and without the note.
 
 Example of a modified NSG rule with a port change and description update:
 
